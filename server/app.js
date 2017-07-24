@@ -8,8 +8,8 @@ var io = require('socket.io')(server);
 
 var render = require('./lib/render.js');
 
-var port = new SerialPort("/dev/ttyACM0", {
-    parser: SerialPort.parsers.readline('\n')
+var port = new SerialPort("/dev/cu.usbmodem1411", {
+    parser: SerialPort.parsers.readline('\r\n')
 });
 
 var router = new Router();
@@ -24,10 +24,17 @@ port.on('open', function() {
     this.body = yield render('index');
     io.sockets.on('connection',function(client){
           port.on('data', function(data) {
-              power = power + data*110/3600/1000;
+             SerialPort_data =  JSON.parse(data);
+             humi = SerialPort_data.Humidity;
+             temp = SerialPort_data.Temperature;
+             currents = SerialPort_data.currents;
+             console.log( "Humidity: "+ humi);
+             console.log("Temperature: "+ temp);
+             console.log("Currents: "+ currents);
+              power = currents + currents * 110/3600/1000;
               money = power * price;
-              console.log(money);
-              console.log(data);
+              client.emit('humi',{data:humi})
+              client.emit('temp',{data:temp})
               client.emit('event',{date:data});        //發送資料
               client.emit('power',{date:power});       //發送資料
               client.emit('price',{date:price});       //發送資料
@@ -38,16 +45,12 @@ port.on('open', function() {
                   cardId = mes[0];
               }
           });
-          console.log('connection');
           client.on('client_data', function(data) {     // 接收來自於瀏覽器的資料
-            console.log(data.data);
             price = data.data;
           });
     });
   });
 });
-
-
 app.use(router.middleware());
 server.listen(3000,function(){
   console.log('listening on port 3000');

@@ -12,7 +12,6 @@ EnergyMonitor emon1;
 void setup() 
 {
     Serial.begin(9600);
-    Serial.println("DHT11 test!");
     emon1.current(1, 26);   
     dht.begin();// Current: input pin, calibration.
 }
@@ -29,13 +28,14 @@ void loop()
     } 
     else 
     {
-        Serial.print("Humidity: "); 
+        Serial.print("{\"Humidity\":"); 
         Serial.print(h);
-        Serial.print(" %\t");
-        Serial.print("Temperature: "); 
+        Serial.print(",\"Temperature\":"); 
         Serial.print(t);
-        Serial.println(" *C");
+        //Serial.println("}");
     }
-    Serial.println(Irms);           // Irms
+   Serial.print(",\"currents\":");
+   Serial.print(Irms);
+   Serial.println("}");// Irms
     delay(1000);
 }
