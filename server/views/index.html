@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>電流統計系統</title>
+  <title>感測值統計系統</title>
   <script src="/socket.io/socket.io.js"></script>
   <script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -11,35 +11,43 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
   <style>
-    body{
+    body {
       background: url(img/background.jpg) no-repeat center center fixed;
-      background-size : cover;
+      background-size: cover;
+    }
+
+    h3 {
+      color: #524C4C;
+    }
+
+    .P_color {
+      color: #7C7777;
     }
   </style>
   <script>
     var socket = io.connect('http://127.0.0.1:3000'); // 連線至伺服器
-    
 
-    socket.on('humi', function (key) {
-      $('#humi').text(key.date)
+    socket.on('humi', function (data) {
+      $('#humi').text(data.date)
     });
 
-    socket.on('temp', function (key) {
-      $('#temp').text(key.date)
+    socket.on('temp', function (data) {
+      $('#temp').text(data.date)
     });
 
-    socket.on('event', function (key) {
-      $('#date').text(key.date)
+    socket.on('event', function (data) {
+      $('#date').text(daya.date)
     });
     socket.on('power', function (key) {
-      $('#power').text(key.date)
+      $('#power').text(data.date)
     });
     socket.on('price', function (key) {
-      $('#cost').text(key.date)
+      $('#cost').text(data.date)
     });
     socket.on('money', function (key) {
-      $('#money').text(key.date)
+      $('#money').text(data.date)
     });
+
     function data() {
       socket.emit('client_data', {
         'data': $('#price').val()
@@ -49,22 +57,30 @@
 </head>
 
 <body>
-  <div class="container-fluid ">
-    <div class="row col-md-8 col-md-offset-4 col-sm-12">
+  <div class="container-fluid " style="margin-top:2%">
+    <div class="row col-md-9 col-md-offset-3 col-sm-10 col-sm-offset-2 col-xs-10 col-xs-offset-1">
       <div class="row">
-        <h1>Alternating current</h1>
+        <h3>Humidity and Temperature:</h2>
+          <p class="P_color" id="temp">目前溫度:</p>
+          <p class="P_color" id="humi">目前濕度:</p>
       </div>
-      <div >
-        <P>目前電流:</P><p id="date"></p>
-        目前使用度數:<p id="power"></p>
-        目前每度費率:<p id="cost"></p>
-        目前應繳金額:<p id="money"></p>
-        目前溫度:<p id="temp"></p>
-        目前濕度:<p id="humi"></p>
-        <input type="text" id="price" placeholder="Text input"></input>
-        <input type="button" value="送出" class="btn btn-primary" onclick="javascript:data() "></input>
+      <div class="row">
+        <h3>Air quality:</h2>
+          <p class="P_color" id="temp">粉塵指數:</p>
+          <p class="P_color" id="humi">空氣品質評估:</p>
+      </div>
+      <div class="row">
+        <h3>Alternating current:</h2>
+          <P class="P_color">目前電流:</P>
+          <p class="P_color" id="date">目前使用度數:</p>
+          <p class="P_color" id="power">目前每度費率:</p>
+          <p class="P_color" id="cost">目前應繳金額:</p>
+          <p class="P_color" id="money"></p>
+          <input type="text" id="price" placeholder="update price value"></input>
+          <input type="button" value="送出" class="btn btn-default" onclick="javascript:data() "></input>
       </div>
     </div>
+  </div>
   </div>
 </body>
 
