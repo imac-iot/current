@@ -1,3 +1,3 @@
 module.exports = {
-  "serialport":"/dev/ttyACM0"
+  "serialport":"/dev/cu.usbmodem1411"
 }
