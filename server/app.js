@@ -5,16 +5,19 @@ var SerialPort = require("serialport");
 var app = koa();
 var server = require('http').createServer(app.callback());
 var io = require('socket.io')(server);
+var serve = require('koa-static');
+var config = require('./config.js');
 
 var render = require('./lib/render.js');
 
-var port = new SerialPort("/dev/cu.usbmodem1411", {
+var port = new SerialPort(config.serialport, {
   parser: SerialPort.parsers.readline('\r\n')
 });
 
 var router = new Router();
 
 app.use(logger());
+app.use(serve(__dirname+'/views'));
 
 var power = 0;
 var money = 0;
