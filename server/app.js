@@ -15,10 +15,12 @@ var port = new SerialPort(config.serialport, {
 });
 
 var router = new Router();
-
 app.use(logger());
+<<<<<<< HEAD
 app.use(serve(__dirname+'/views'));
 
+=======
+>>>>>>> 710f4e9f5da03eeb41c7c47c36f588f295a78998
 var power = 0;
 var money = 0;
 var price = 1.63;
@@ -31,11 +33,35 @@ port.on('open', function () {
         humi = SerialPort_data.Humidity;
         temp = SerialPort_data.Temperature;
         currents = SerialPort_data.currents;
-        // console.log("Humidity: " + humi);
-        // console.log("Temperature: " + temp);
-        // console.log("Currents: " + currents);
         power = currents + currents * 110 / 3600 / 1000;
         money = power * price;
+        console.log("Humidity: " + humi);
+        console.log("Temperature: " + temp);
+        console.log("---------------------");
+        console.log("Currents: " + currents);
+        console.log("power: "+power);
+        console.log("money: "+money);
+        console.log("---------------------");
+        voMeasured = SerialPort_data.RawSignalValue;
+        console.log('Raw Signal Value (0-1023): '+voMeasured);
+        calcVoltage = voMeasured * (5.0 /1024.0);
+        console.log('calcVoltage: '+calcVoltage);
+        dustDensity = 0.17 * calcVoltage -0.1;
+        console.log('dustDensity: '+dustDensity);
+        console.log("---------------------");
+
+         client.emit('dustDensity', {
+          date: dustDensity
+        })
+        client.emit('voMeasured', {
+          date: voMeasured
+        })
+         client.emit('calcVoltage', {
+          date: calcVoltage
+        })
+        client.emit('dustDensity', {
+          date: dustDensity
+        })
         client.emit('humi', {
           date: humi
         })
