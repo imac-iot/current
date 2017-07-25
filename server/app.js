@@ -9,11 +9,9 @@ var serve = require('koa-static');
 var config = require('./config.js');
 
 var render = require('./lib/render.js');
-
 var port = new SerialPort(config.serialport, {
   parser: SerialPort.parsers.readline('\r\n')
 });
-
 var router = new Router();
 app.use(logger());
 
