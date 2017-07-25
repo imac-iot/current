@@ -28,19 +28,19 @@ port.on('open', function () {
         humi = SerialPort_data.Humidity;
         temp = SerialPort_data.Temperature;
         currents = SerialPort_data.currents;
-        console.log("Humidity: " + humi);
-        console.log("Temperature: " + temp);
-        console.log("Currents: " + currents);
+        // console.log("Humidity: " + humi);
+        // console.log("Temperature: " + temp);
+        // console.log("Currents: " + currents);
         power = currents + currents * 110 / 3600 / 1000;
         money = power * price;
         client.emit('humi', {
-          data: humi
+          date: humi
         })
         client.emit('temp', {
-          data: temp
+          date: temp
         })
         client.emit('event', {
-          date: data
+          date: currents
         }); //發送資料
         client.emit('power', {
           date: power

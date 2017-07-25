@@ -21,7 +21,10 @@
     }
 
     .P_color {
-      color: #7C7777;
+      color: #555555;
+    }
+    .P_color2{
+      color:#303030;
     }
   </style>
   <script>
@@ -36,15 +39,15 @@
     });
 
     socket.on('event', function (data) {
-      $('#date').text(daya.date)
+      $('#date').text(data.date)
     });
-    socket.on('power', function (key) {
+    socket.on('power', function (data) {
       $('#power').text(data.date)
     });
-    socket.on('price', function (key) {
+    socket.on('price', function (data) {
       $('#cost').text(data.date)
     });
-    socket.on('money', function (key) {
+    socket.on('money', function (data) {
       $('#money').text(data.date)
     });
 
@@ -60,22 +63,26 @@
   <div class="container-fluid " style="margin-top:2%">
     <div class="row col-md-9 col-md-offset-3 col-sm-10 col-sm-offset-2 col-xs-10 col-xs-offset-1">
       <div class="row">
-        <h3>Humidity and Temperature:</h2>
-          <p class="P_color" id="temp">目前溫度:</p>
-          <p class="P_color" id="humi">目前濕度:</p>
+        <h3>Humidity and Temperature:</h3>
+          <p class="P_color2">目前溫度:</p>
+          <h4 class="P_color" id="temp"></h4>
+          <p class="P_color2">目前濕度:</p>
+          <h4 class="P_color" id="humi"></h4>
       </div>
       <div class="row">
-        <h3>Air quality:</h2>
-          <p class="P_color" id="temp">粉塵指數:</p>
-          <p class="P_color" id="humi">空氣品質評估:</p>
+        <h3>Air quality:</h3>
+          <p>粉塵指數:</h4>
+          <p class="P_color" id=""></p>
+          <p>空氣品質評估:</h4>
+          <p class="P_color" id=""></p>
       </div>
       <div class="row">
         <h3>Alternating current:</h2>
-          <P class="P_color">目前電流:</P>
-          <p class="P_color" id="date">目前使用度數:</p>
-          <p class="P_color" id="power">目前每度費率:</p>
-          <p class="P_color" id="cost">目前應繳金額:</p>
-          <p class="P_color" id="money"></p>
+          <p class="P_color2">目前電流:</p>
+          <h4 class="P_color2" id="date"></h4><p class="P_color">目前使用度數:</p>
+          <h4 class="P_color2" id="power"></h4><p class="P_color">目前每度費率:</p>
+          <h4 class="P_color2" id="cost"></h4><p class="P_color">目前應繳金額:</p>
+          <h4 class="P_color2" id="money"></h4>
           <input type="text" id="price" placeholder="update price value"></input>
           <input type="button" value="送出" class="btn btn-default" onclick="javascript:data() "></input>
       </div>
