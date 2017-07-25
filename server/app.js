@@ -16,11 +16,9 @@ var port = new SerialPort(config.serialport, {
 
 var router = new Router();
 app.use(logger());
-<<<<<<< HEAD
+
 app.use(serve(__dirname+'/views'));
 
-=======
->>>>>>> 710f4e9f5da03eeb41c7c47c36f588f295a78998
 var power = 0;
 var money = 0;
 var price = 1.63;
