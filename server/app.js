@@ -39,7 +39,7 @@ port.on('open', function () {
         console.log('Raw Signal Value (0-1023): '+voMeasured);
         calcVoltage = voMeasured * (5.0 /1024.0);
         console.log('calcVoltage: '+calcVoltage);
-        dustDensity = 0.17 * calcVoltage -0.1;
+        dustDensity = (0.17 * calcVoltage -0.1)*1000;
         console.log('dustDensity: '+dustDensity);
         console.log("---------------------");
         

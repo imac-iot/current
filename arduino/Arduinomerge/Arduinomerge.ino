@@ -1,6 +1,6 @@
 #include "DHT.h"
 #include "EmonLib.h" 
-#define DHTPIN A0 
+#define DHTPIN A1 
 #define DHTTYPE DHT11   // DHT 11 
 DHT dht(DHTPIN, DHTTYPE); 
 EnergyMonitor emon1; 
@@ -16,7 +16,7 @@ float dustDensity = 0;
 void setup() 
 {
     Serial.begin(9600); 
-    emon1.current(1, 26);  //Current: input pin, calibration.
+    emon1.current(2, 26);  //Current: input pin, calibration.
     dht.begin(); // dht
     pinMode(ledPower,OUTPUT); 
 }
