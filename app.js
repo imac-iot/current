@@ -111,11 +111,19 @@ port.on('open', function () {
         });
     });
   },2000);
+<<<<<<< HEAD
 });
 
 router.get('/', function* index() {
   this.body = yield render('index');
 });
+=======
+});
+
+router.get('/', function* index() {
+  this.body = yield render('index');
+});
+>>>>>>> 31e5223170b74bdd2469d5ade32df813419491e5
 app.use(serve('./views'));
 app.use(router.middleware());
 server.listen(3000, function () {
