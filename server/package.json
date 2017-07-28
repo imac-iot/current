@@ -17,6 +17,7 @@
     "koa-router": "^5.4.0",
     "koa-static": "^1.5.2",
     "koa-views": "^1.2.1",
+    "mongodb": "^2.2.30",
     "nunjucks": "^3.0.1",
     "serialport": "^4.0.7",
     "socket.io": "^1.7.3",
