@@ -1,5 +1,5 @@
 var SerialPort = require("serialport");   //10.28.120.28
-var mqtt    = require('mqtt');            //192.168.8.126
+var mqtt    = require('mqtt');            //10.21.20.215
 var client  = mqtt.connect('mqtt://10.28.120.28:1883');
 
 var port = new SerialPort("/dev/ttyACM1", {

@@ -15,13 +15,14 @@ void loop()
     float humidity = dht.getHumidity();
     float temperature = dht.getTemperature();
     double Irms = emon1.calcIrms(1480);  // Calculate Irms only
-
-    Serial.print("{\"Humidity\":"); 
-    Serial.print(humidity, 1);
-    Serial.print(",\"Temperature\":"); 
-    Serial.print(temperature, 1);
-    Serial.print(",\"currents\":");
-    Serial.print(Irms);
-    Serial.println("}");// Irms
+    if(humidity>=0){
+      Serial.print("{\"Humidity\":"); 
+      Serial.print(humidity, 1);
+      Serial.print(",\"Temperature\":"); 
+      Serial.print(temperature, 1);
+      Serial.print(",\"currents\":");
+      Serial.print(Irms);
+      Serial.println("}");// Irms
+    }
     delay(1000);
 }
