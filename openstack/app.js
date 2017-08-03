@@ -1,7 +1,7 @@
 var koa = require('koa');
 var Router = require('koa-router');
 var logger = require('koa-logger');
-var SerialPort = require("serialport");
+var mqtt  = require('mqtt');            //192.168.8.126
 var views = require('co-views');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
@@ -20,9 +20,12 @@ MongoClient.connect("mongodb://localhost:27017/sensors",function(err,pDb){
   db = pDb;
 });
 
-var port = new SerialPort(config.serialport, {
-  parser: SerialPort.parsers.readline('\r\n')
+var mqttClient  = mqtt.connect('mqtt://127.0.0.1');
+mqttClient.on('connect', function () {
+  console.log('on connect');
+  mqttClient.subscribe('current');
 });
+
 var router = new Router();
 app.use(logger());
 
@@ -34,11 +37,7 @@ var humi = 0;
 var temp = 0;
 var currents = 0;
 var currentAry = new Array(24);
-// var currents = new Array();
-// var temp = new Array();
-// var humi = new Array();
-// var time = new Array();
-// var num = new Array();
+
 // arduino data insert
 function plusdata(){
   var collection = db.collection('datas');
@@ -68,30 +67,23 @@ function showdata() {
     });
 };
 
-//open arduino port
-port.on('open', function () {
-  console.log('connect');
-  setTimeout(function(){
-    io.sockets.on('connection', function (client) {
-    port.on('data', function (data) {
+io.sockets.on('connection', function (client) {
+    mqttClient.on('message', function (topic, message) {
       date = new Date(); //get serial port data
-      SerialPort_data = JSON.parse(data); //serial print turn to JSON -> serialPort_data
-      humi = SerialPort_data.Humidity;  //get data.Humidity (json)
-      temp = SerialPort_data.Temperature; //get data.Temperature (json)
-      currents = SerialPort_data.currents; //get data.currents (json)
-      currentAry.shift();
-      currentAry.push(currents);
-      plusdata(); // call mongo insert func
-          power = power + currents * 110 / 3600 / 1000;
-          money = power * price;
-          // console.log("Humidity: " + humi);
-          // console.log("Temperature: " + temp);
-          // console.log("---------------------");
-          // console.log("Currents: " + currents);
-          // console.log("power: "+power);
-          // console.log("money: "+money);
-          // console.log("---------------------");
-
+      mqtt_data = JSON.parse(message); //serial print turn to JSON -> serialPort_data
+      console.log(typeof(mqtt_data.Humidity));
+      if(typeof(mqtt_data.Humidity) == "number" && typeof(mqtt_data.Temperature) == "number" && typeof(mqtt_data.currents)=="number"){
+        console.log(mqtt_data);
+        humi = mqtt_data.Humidity;  //get data.Humidity (json)
+        temp = mqtt_data.Temperature; //get data.Temperature (json)
+        currents = mqtt_data.currents; //get data.currents (json)
+        currentAry.shift();
+        currentAry.push(currents);
+        plusdata(); // call mongo insert func
+        console.log(power);
+        power = power + currents * 220 / 3600 / 1000;
+        money = power * price;
+        console.log(message.toString());
          //socket.io s
           client.emit('humi', {
             date: humi
@@ -111,18 +103,28 @@ port.on('open', function () {
           client.emit('money', {
             date: money
           }); //發送資料
-          // client.emit('currentLine', {
-          //   data: currentAry
-          // }); //發送資料
           client.on('client_data', function (data) { // 接收來自於瀏覽器的資料
             price = data.data;
           });
-        });
+      }
     });
-  },2000);
 });
 
+
+
+
+
 router.get('/', function* index() {
+  yield function currentAll(done){
+    var collection = db.collection('datas');
+    collection.find({}).toArray(function (err, data) {
+        for(var i=0 ; i<data.length ; i++){
+          power = power + data[i].currents*220/3600/1000;
+          console.log(power);
+        }
+        done();
+    });
+  }
   this.body = yield render('index');
 });
 router.get('/line',function * (){

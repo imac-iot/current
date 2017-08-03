@@ -3,13 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
-  "dependencies": {},
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "co-views": "^2.1.0",
     "koa": "^1.2.4",
@@ -18,9 +11,16 @@
     "koa-static": "^1.5.2",
     "koa-views": "^1.2.1",
     "mongodb": "^2.2.30",
+    "mqtt": "^2.10.0",
     "nunjucks": "^3.0.1",
     "serialport": "^4.0.7",
     "socket.io": "^1.7.3",
     "swig": "^1.4.2"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
 }
