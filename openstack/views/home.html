@@ -33,32 +33,35 @@
     .barColor{
       background:rgb(12, 14, 14);
     }
+    a{
+      color:rgb(238, 229, 230);
+    }
   </style>
   <script>
     var socket = io.connect('http://127.0.0.1:3000'); // 連線至伺服器
 
      socket.on('dustDensity', function (data) {
-      $('#dustDensity').text(data.date)
+      $('#dustDensity').text(data.data)
     });
     socket.on('humi', function (data) {
-      $('#humi').text(data.date)
+      $('#humi').text(data.data)
     });
 
     socket.on('temp', function (data) {
-      $('#temp').text(data.date)
+      $('#temp').text(data.data)
     });
 
     socket.on('event', function (data) {
-      $('#date').text(data.date)
+      $('#date').text(data.data)
     });
     socket.on('power', function (data) {
-      $('#power').text(data.date)
+      $('#power').text(data.data)
     });
     socket.on('price', function (data) {
-      $('#cost').text(data.date)
+      $('#cost').text(data.data)
     });
     socket.on('money', function (data) {
-      $('#money').text(data.date)
+      $('#money').text(data.data)
     });
 
     function data() {

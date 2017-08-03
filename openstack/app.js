@@ -66,39 +66,44 @@ function showdata() {
     });
 };
 
+mqttClient.on('message', function (topic, message) {
+  date = new Date(); //get serial port data
+  mqtt_data = JSON.parse(message); //serial print turn to JSON -> serialPort_data
+  // console.log(typeof(mqtt_data.Humidity));
+  if(typeof(mqtt_data.Humidity) == "number" && typeof(mqtt_data.Temperature) == "number" && typeof(mqtt_data.currents)=="number"){
+    // console.log(mqtt_data);
+    humi = mqtt_data.Humidity;  //get data.Humidity (json)
+    temp = mqtt_data.Temperature; //get data.Temperature (json)
+    currents = mqtt_data.currents; //get data.currents (json)
+    plusdata(); // call mongo insert func
+    // console.log(power);
+    power = power + currents * 220 / 3600 / 1000;
+    money = power * price;
+  }
+});
+
 io.sockets.on('connection', function (client) {
     mqttClient.on('message', function (topic, message) {
-      date = new Date(); //get serial port data
-      mqtt_data = JSON.parse(message); //serial print turn to JSON -> serialPort_data
-      // console.log(typeof(mqtt_data.Humidity));
       if(typeof(mqtt_data.Humidity) == "number" && typeof(mqtt_data.Temperature) == "number" && typeof(mqtt_data.currents)=="number"){
-        // console.log(mqtt_data);
-        humi = mqtt_data.Humidity;  //get data.Humidity (json)
-        temp = mqtt_data.Temperature; //get data.Temperature (json)
-        currents = mqtt_data.currents; //get data.currents (json)
-        plusdata(); // call mongo insert func
-        // console.log(power);
-        power = power + currents * 220 / 3600 / 1000;
-        money = power * price;
         // console.log(message.toString());
          //socket.io s
           client.emit('humi', {
-            date: humi
+            data: humi
           })
           client.emit('temp', {
-            date: temp
+            data: temp
           })
           client.emit('event', {
-            date: currents
+            data: currents
           }); //發送資料
           client.emit('power', {
-            date: power
+            data: power
           }); //發送資料
           client.emit('price', {
-            date: price
+            data: price
           }); //發送資料
           client.emit('money', {
-            date: money
+            data: money
           }); //發送資料
           client.on('client_data', function (data) { // 接收來自於瀏覽器的資料
             price = data.data;
