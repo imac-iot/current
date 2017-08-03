@@ -36,7 +36,6 @@ var price = 1.63;
 var humi = 0;
 var temp = 0;
 var currents = 0;
-var currentAry = new Array(24);
 
 // arduino data insert
 function plusdata(){
@@ -71,19 +70,17 @@ io.sockets.on('connection', function (client) {
     mqttClient.on('message', function (topic, message) {
       date = new Date(); //get serial port data
       mqtt_data = JSON.parse(message); //serial print turn to JSON -> serialPort_data
-      console.log(typeof(mqtt_data.Humidity));
+      // console.log(typeof(mqtt_data.Humidity));
       if(typeof(mqtt_data.Humidity) == "number" && typeof(mqtt_data.Temperature) == "number" && typeof(mqtt_data.currents)=="number"){
-        console.log(mqtt_data);
+        // console.log(mqtt_data);
         humi = mqtt_data.Humidity;  //get data.Humidity (json)
         temp = mqtt_data.Temperature; //get data.Temperature (json)
         currents = mqtt_data.currents; //get data.currents (json)
-        currentAry.shift();
-        currentAry.push(currents);
         plusdata(); // call mongo insert func
-        console.log(power);
+        // console.log(power);
         power = power + currents * 220 / 3600 / 1000;
         money = power * price;
-        console.log(message.toString());
+        // console.log(message.toString());
          //socket.io s
           client.emit('humi', {
             date: humi
@@ -110,28 +107,32 @@ io.sockets.on('connection', function (client) {
     });
 });
 
-
-
-
-
 router.get('/', function* index() {
-  yield function currentAll(done){
-    var collection = db.collection('datas');
+  var collection = db.collection('datas');
+  yield function(done){
+    var countPower = 0;
     collection.find({}).toArray(function (err, data) {
+        // console.log(data);
         for(var i=0 ; i<data.length ; i++){
-          power = power + data[i].currents*220/3600/1000;
-          console.log(power);
+          countPower = countPower + data[i].Currents*220/3600/1000;
         }
+        console.log(countPower);
+        power=countPower;
         done();
     });
+    // setTimeout(function(){
+    //   done();
+    // },6000);
   }
-  this.body = yield render('index');
+  this.body = yield render('home');
 });
+
 router.get('/line',function * (){
   var startTime = new Date().getTime() - 86400000;
   var endTime = new Date().getTime();
   var countAry = 23 - new Date().getHours();
   var currentAry = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  var powerAry = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   var temperatureAry = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   var humidityAry = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   var timeAry = new Array();
@@ -144,11 +145,12 @@ router.get('/line',function * (){
     collection.find({"inserttime":{"$gte":startTime,"$lte":endTime}}).toArray(function (err, data) {
         for(var i=0 ; i<data.length ; i++){
           var hours = new Date(data[i].inserttime).getHours();
-          currentAry[hours+countAry]=currentAry[hours+countAry]+data[i].Currents*220/1000/60/60;
+          currentAry[hours+countAry]=(currentAry[hours+countAry]+data[i].Currents)/2;
+          powerAry[hours+countAry]=powerAry[hours+countAry]+data[i].Currents*220/1000/60/60;
           temperatureAry[hours+countAry]=(temperatureAry[hours+countAry]+data[i].Temperature)/2;
           humidityAry[hours+countAry]=(humidityAry[hours+countAry]+data[i].Humidity)/2;
         }
-        console.log(currentAry);
+        console.log(powerAry);
         console.log(temperatureAry);
         console.log(humidityAry);
         for(var i=23 ; i>=0 ; i--){
@@ -163,6 +165,7 @@ router.get('/line',function * (){
     });
   }
   this.body = yield render('lineChart',{currentAry:currentAry,
+                                        powerAry:powerAry,
                                         temperatureAry:temperatureAry,
                                         humidityAry:humidityAry,
                                         timeAry:timeAry});

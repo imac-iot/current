@@ -12,18 +12,23 @@
         background: url(/img/background.jpg) no-repeat center center fixed;
         background-size: cover;
       }
+      .barColor{
+        background:rgb(12, 14, 14);
+      }
     </style>
-    <div class="container">
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row barColor">
+        <ul class="nav nav-tabs">
+         <li role="presentation"><a href="/">Home</a></li>
+         <li role="presentation"><a href="/line">Line</a></li>
+        </ul>
+      </div>
       <div class="row">
         <div class="col-md-10 col-md-offset-1">
           <canvas id="myChart"></canvas>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-2 col-md-offset-10">
-          <form action="/" method="get">
-            <button class="btn btn-default" type="submit">返回</button>
-          </form>
         </div>
       </div>
     </div>
@@ -37,6 +42,12 @@
           label: 'Currents',
           fill:false,
           data: [{{currentAry}}],
+          backgroundColor: "rgb(161, 61, 222)",
+          borderColor:"rgb(161, 61, 222)"
+        },{
+          label: 'Power',
+          fill:false,
+          data: [{{powerAry}}],
           backgroundColor: "rgb(61, 82, 222)",
           borderColor:"rgb(61, 82, 222)"
         },{
@@ -55,8 +66,5 @@
       }
     });
     </script>
-    <title>Document</title>
-  </head>
-  <body>
   </body>
 </html>
