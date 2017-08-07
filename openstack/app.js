@@ -20,7 +20,7 @@ MongoClient.connect("mongodb://localhost:27017/sensors",function(err,pDb){
   db = pDb;
 });
 
-var mqttClient  = mqtt.connect('mqtt://127.0.0.1');
+var mqttClient  = mqtt.connect('mqtt://10.28.120.17');
 mqttClient.on('connect', function () {
   console.log('on connect');
   mqttClient.subscribe('current');

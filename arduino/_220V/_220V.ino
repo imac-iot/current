@@ -5,7 +5,7 @@ EnergyMonitor emon1;
 void setup() 
 {
     Serial.begin(9600); 
-    dht.setup(13);
+    dht.setup(10);
     emon1.current(2, 20);  //Current: input pin, calibration.
 }
 
