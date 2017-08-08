@@ -13,7 +13,7 @@ var config = require('./config.js');
 var render = require('./lib/render.js');
 var db;
 
-MongoClient.connect("mongodb://localhost:27017/sensors",function(err,pDb){
+MongoClient.connect("mongodb://10.28.120.17:27017/sensors",function(err,pDb){
   if(err){
     return console.dir(err);
   }
@@ -133,31 +133,43 @@ router.get('/', function* index() {
 });
 
 router.get('/line',function * (){
-  var startTime = new Date().getTime() - 86400000;
+  var nowMinute = new Date().getMinutes() * 60 * 1000;
+  var nowSeconds = new Date().getSeconds() * 1000;
+  var startTime = new Date().getTime() - (82800000+nowMinute+nowSeconds);
   var endTime = new Date().getTime();
-  var countAry = 23 - new Date().getHours();
+  var todayHours = 23 - new Date().getHours();
+  var yesterdayHours = new Date().getHours() + 1;
   var currentAry = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   var powerAry = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   var temperatureAry = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   var humidityAry = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
   var timeAry = new Array();
 
-  console.log(startTime);
-  console.log(endTime);
-  console.log(countAry);
+  // console.log(startTime);
+  // console.log(endTime);
+  // console.log(todayHours);
+  // console.log(yesterdayHours);
   yield function count(done){
     var collection = db.collection('datas');
     collection.find({"inserttime":{"$gte":startTime,"$lte":endTime}}).toArray(function (err, data) {
         for(var i=0 ; i<data.length ; i++){
           var hours = new Date(data[i].inserttime).getHours();
-          currentAry[hours+countAry]=(currentAry[hours+countAry]+data[i].Currents)/2;
-          powerAry[hours+countAry]=powerAry[hours+countAry]+data[i].Currents*220/1000/60/60;
-          temperatureAry[hours+countAry]=(temperatureAry[hours+countAry]+data[i].Temperature)/2;
-          humidityAry[hours+countAry]=(humidityAry[hours+countAry]+data[i].Humidity)/2;
+          // console.log(hours);
+          if(hours<=new Date().getHours()){
+            currentAry[hours+todayHours]=(currentAry[hours+todayHours]+data[i].Currents)/2;
+            powerAry[hours+todayHours]=powerAry[hours+todayHours]+data[i].Currents*220/1000/60/60;
+            temperatureAry[hours+todayHours]=(temperatureAry[hours+todayHours]+data[i].Temperature)/2;
+            humidityAry[hours+todayHours]=(humidityAry[hours+todayHours]+data[i].Humidity)/2;
+          }else{
+            currentAry[hours-yesterdayHours]=(currentAry[hours-yesterdayHours]+data[i].Currents)/2;
+            powerAry[hours-yesterdayHours]=powerAry[hours-yesterdayHours]+data[i].Currents*220/1000/60/60;
+            temperatureAry[hours-yesterdayHours]=(temperatureAry[hours-yesterdayHours]+data[i].Temperature)/2;
+            humidityAry[hours-yesterdayHours]=(humidityAry[hours-yesterdayHours]+data[i].Humidity)/2;
+          }
         }
-        console.log(powerAry);
-        console.log(temperatureAry);
-        console.log(humidityAry);
+        // console.log(powerAry);
+        // console.log(temperatureAry);
+        // console.log(humidityAry);
         for(var i=23 ; i>=0 ; i--){
           var count = new Date(endTime).getHours()+i-23;
           if(count>=0){
