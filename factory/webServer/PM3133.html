@@ -10,22 +10,36 @@
     .margin-adjust {
       margin-top: 7%;
     }
-    .margin-top20px{
+    .margin-top{
         margin-top: 20px;
     }
+
+    @media (max-width:575px){
+      .margin-top{
+        margin-top: 50px;
+     }
+      h2{
+        margin-left:  15px;
+      }
+    }
+    @media(min-width:576px) and (max-width:767px){
+       h2{
+        margin-left:  20px;
+      }
+    } 
   </style>
   <script src="chart.js"></script>
   <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
       <ul class="nav nav-pills">
-        <li role="presentation"><a style="color:#736C6C" href="/">DL-303</a></li>
+        <li role="presentation"><a style="color:#736C6C" href="/">DL-303 & ET7044</a></li>
         <li role="presentation"><a style="color:#736C6C" href="/PM3133">PM-3133</a></li>
       </ul>
     </div>
   </nav>
   <!-- chart.js  -->
   <div class="container margin-adjust">
-    <div class="row margin-top20px">
+    <div class="row margin-top">
      <h2 class="col-md-offset-1">電流 Currents</h2>
    </div>
     <div class="row">
@@ -33,7 +47,7 @@
         <canvas id="currentsChart"></canvas>
       </div>
     </div>
-    <div class="row margin-top20px">
+    <div class="row margin-top">
      <h2 class="col-md-offset-1 ">電壓 Voltage</h2>
    </div>
     <div class="row ">
@@ -42,7 +56,7 @@
       </div>
     </div>
 
-  <div class="row margin-top20px">
+  <div class="row margin-top">
      <h2 class="col-md-offset-1">功率 power(kw)</h2>
    </div>
     <div class="row ">
@@ -50,24 +64,31 @@
         <canvas id="kwChart"></canvas>
       </div>
     </div>
-<div class="row col-md-offset-1 margin-top20px">
-  
-    <div class="col-md-5 col-sm-6 col-xs-6">
+<div class="container margin-top">
+    <div class="col-md-offset-1 col-md-5 col-sm-12 col-xs-12">
         <h3>視在功率(kva)</h3>
-    </div>
-    <div class="col-md-5 col-sm-6 col-xs-6">
-       <h3>虛功率(kvar)</h3>
-    </div>
-</div>
-<div class="row">
-      <div class="col-md-offset-1 col-md-5 col-sm-12">
+        <div class="row">
         <canvas id="kvaChart"></canvas>
-     </div>
-      <div class="col-md-5 col-sm-12">
+      </div>
+    </div>
+    <div class="col-md-5 col-sm-12 col-xs-12">
+       <h3>虛功率(kvar)</h3>
+       <div class="row">
         <canvas id="kvarChart"></canvas>
       </div>
-  </div>
     </div>
+</div>
+    </div>
+<div class="container-fluid" style="margin-top:50px;background-color:#F8F8F8">
+     <div class="row">
+       <div class="col-md-offset-11 col-xs-offset-11 col-sm-offset-11 col-lg-offset-11">
+         <footer >
+           <p style="margin-top:15px">imac</p>
+         </footer>
+       </div>
+      
+    </div>
+  </div>
   <script>
     // get chart.js var
     var PM3133V_a = [{{PM3133V_a}}];
