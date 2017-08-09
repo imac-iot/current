@@ -20,7 +20,7 @@ MongoClient.connect("mongodb://localhost:27017/Factory", function (err, pDb) {
 var router = new Router();
 const logger = require('koa-logger');
 
-//mqtt 
+//mqtt
 var client = mqtt.connect('mqtt://10.28.120.17');
 client.on('connect', function () {
     console.log('connect to MQTT server');
@@ -84,7 +84,7 @@ var time = new Array();
 var co2 = new Array();
 var dl303num = new Array();
 
-//mongo db PM3133 collection data array 
+//mongo db PM3133 collection data array
 var A_JSON = new Array();
 var B_JSON = new Array();
 var C_JSON = new Array();
@@ -110,7 +110,7 @@ var PM3133kVA_c = new Array();
 
 var pm3133num = new Array();
 
-function showPM3133data() {
+var showPM3133data = function showPM3133data(done) {
     var collection = db.collection('PM3133');
     collection.find({}).limit(30).toArray(function (err, data) {
         for (var i = 0; i < data.length; i++) {
@@ -118,7 +118,7 @@ function showPM3133data() {
                 B_JSON[i] = data[i].PM3133_B,
                 C_JSON[i] = data[i].PM3133_C,
                 pm3133num[i] = i;
-            // PM3133 A 
+            // PM3133 A
             PM3133V_a[i] = A_JSON[i]['V_a'];
             PM3133I_a[i] = A_JSON[i]['I_a'];
             PM3133kW_a[i] = A_JSON[i]['kW_a'];
@@ -143,11 +143,12 @@ function showPM3133data() {
             // console.log('C:');
             // console.log(C_JSON);
         }
+        done();
     });
 };
 
 //SHOW DL303 DATA FUNC
-function showDL303data() {
+var showDL303data = function showDL303data(done) {
     var collection = db.collection('DL303');
     collection.find({}).limit(20).sort( { InsertTime: -1 } ).toArray(function (err, data) {
         for (var i = 0; i < data.length; i++) {
@@ -157,6 +158,7 @@ function showDL303data() {
                 time[i] = data[i].InsertTime,
                 dl303num[i] = i;
         }
+        done();
     });
 };
 
@@ -166,8 +168,7 @@ var render = views(__dirname, {
     }
 });
 router.get('/', function* () {
-    showDL303data();
-    showPM3133data();
+    yield showDL303data;
     this.body = yield render("index", {
         //KEY:Currents ; Value:currents
         "CO2": co2,
@@ -180,8 +181,7 @@ router.get('/', function* () {
 
 
 router.get('/PM3133', function* () {
-    showDL303data();
-    showPM3133data();
+    yield showPM3133data;
     this.body = yield render("PM3133", {
         //"KEY": Value:
         "PM3133V_a": PM3133V_a,
@@ -223,11 +223,11 @@ router.post('/', function* () {
     if(DO == "DO5")
     {a = 4;}
     if(DO == "DO6")
-    {a = 5;} 
+    {a = 5;}
     if(DO == "DO7")
     { a = 6;}
     if(DO == "DO8")
-    {a = 7;}                   
+    {a = 7;}
     DO_json[a] = !DO_json[a];
     console.log(DO_json);
     mqttpub_DO= JSON.stringify(DO_json);
