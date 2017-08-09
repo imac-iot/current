@@ -236,6 +236,6 @@ router.post('/', function* () {
 });
 app.use(bodyparser());
 app.use(router.middleware());
-server.listen(3000, function () {
-    console.log('listening on port 3000');
+server.listen(5500, function () {
+    console.log('listening on port 5500');
 });
