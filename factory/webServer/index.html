@@ -16,7 +16,7 @@
       margin-top: 10%;
       }
     }
-    
+
     .textcolor{
       color:#A54A55;
     }
@@ -36,12 +36,12 @@
   </nav>
   <!-- chart.js  -->
   <div class="container margin-adjust">
- 
+
     <div class="col-md-offset-1 margin-adjust">
       <h1>DL-303</h1>
       <p >CO2、Temperature and Humidity monitor</p>
     </div>
-    
+
     <div class="row margin-top">
       <div class="col-md-offset-1 col-md-10 col-sm-12">
         <canvas id="DL303Chart"></canvas>
@@ -130,13 +130,13 @@
            <p style="margin-top:15px">imac</p>
          </footer>
        </div>
-      
+
     </div>
   </div>
- 
+
   <script>
     //socket.io connect to server
-    var socket = io.connect('http://127.0.0.1:3000'); 
+    var socket = io.connect('http://10.28.120.17:5500'); 
     socket.on('ET7044_DO1', function (msg) {
       $('#ET7044_DO1').text(msg.data)
     });
@@ -162,7 +162,7 @@
       $('#ET7044_DO8').text(msg.data)
     });
     //get chart.js  var
-    var CO2 = [{{CO2}}]; 
+    var CO2 = [{{CO2}}];
     var Temperature = [{{Temperature}}];
     var Humidity = [{{Humidity}}];
     var dl303num = [{{dl303num}}];
@@ -197,7 +197,7 @@
         ]
       }
     });
-  
+
   </script>
 </head>
 
