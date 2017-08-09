@@ -6,6 +6,9 @@ var client = mqtt.connect('mqtt://10.28.120.17:1883')
 client.on('connect', function () {
     console.log('connect');
     client.subscribe('DL303/#') //co2
+        client.on('offline', function() {
+        console.log('on offline');
+        });
     // client.subscribe('DL303/RH') // humidity
     // client.subscribe('DL303/TC') // temperature *c
     // client.subscribe('DL303/DC') // dew point *c
@@ -21,8 +24,6 @@ MongoClient.connect("mongodb://localhost:27017/Factory", function (err, pDb) {
     }
     db = pDb;
 });
-var server = require('http').createServer(app.callback());
-var router = new Router();
 
 var DL303_co2;
 var DL303_humi;
@@ -55,10 +56,20 @@ client.on('message', function (topic, message) {
     //判斷資料有收到 !=null
     if (DL303_co2!=null && DL303_humi!=null && DL303_temp!=null && DL303_dewp!=null  ){
             insertData();  
-
-    }
-      
+    }      
 })
+
+client.on('error', function(err) {
+  console.log('MQTT on error', err);
+});
+
+client.on('offline', function() {
+  console.log('on offline');
+});
+
+client.on('reconnect', function() {
+  console.log('on reconnect');
+});
 
 function insertData() {
     var date = new Date();
