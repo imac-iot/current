@@ -13,7 +13,7 @@ var config = require('./config.js');
 var render = require('./lib/render.js');
 var db;
 
-MongoClient.connect("mongodb://10.28.120.17:27017/sensors",function(err,pDb){
+MongoClient.connect("mongodb://10.28.120.39:27017/sensors",function(err,pDb){
   if(err){
     return console.dir(err);
   }
