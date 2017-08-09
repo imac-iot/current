@@ -5,6 +5,7 @@ var client = new ModbusRTU();
 var timeoutRunRef = null;
 var timeoutConnectRef = null;
 var networkErrors = ["ESOCKETTIMEDOUT", "ETIMEDOUT", "ECONNRESET", "ECONNREFUSED"];
+var writeData = [false,false,false,false,false,false,false,false];
 
 function checkError(e) {
     if (e.errno && networkErrors.includes(e.errno)) {
@@ -48,12 +49,14 @@ var DOstatus;
 function run() {
     // clear pending timeouts
     clearTimeout(timeoutRunRef);
-    client.readCoils(0, 7)
+    client.writeCoils(0,writeData);
+    client.readCoils(0, 8)
         .then(function (d) {
-            DOstatus = d.data.toString();
-            //console.log(DOstatus);
+//            DOstatus = d.data.toString();
+                    DOstatus = JSON.stringify(d.data);
+            console.log(DOstatus);
             console.log("Receive:", d.data);
-            //mqttClient.publish('ET7044/DOstatus', DOstatus );
+            mqttClient.publish('ET7044/DOstatus', DOstatus );
         })
         .then(function () {
             timeoutRunRef = setTimeout(run, 5000);
@@ -70,5 +73,12 @@ connect();
 var mqttClient = mqtt.connect('mqtt://10.28.120.17:1883');
 mqttClient.on('connect',function(){
     console.log('connect to MQTT server');
+    mqttClient.subscribe('ET7044/write');
   //  mqttClient.publish('ET7044/DOstatus', DOstatus );
+});
+
+mqttClient.on('message', function (topic, message) {
+  // message is Buffer
+  writeData=JSON.parse(message);
+  console.log(writeData);
 });
