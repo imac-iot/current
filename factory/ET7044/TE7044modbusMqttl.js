@@ -72,3 +72,15 @@ mqttClient.on('connect',function(){
     console.log('connect to MQTT server');
     mqttClient.publish('ET7044/DOstatus', DOstatus );
 });
+
+mqttClient.on('disconnect', function() {
+  console.log('on disconnect');
+});
+
+mqttClient.on('reconnect', function() {
+  console.log('on reconnect');
+});
+
+mqttClient.on('offline', function() {
+  console.log('on offline');
+});
