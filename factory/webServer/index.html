@@ -51,6 +51,14 @@
   </div>
   <div class="container">
   <div class="row margin-adjust">
+    <div class="row">
+      <div class="col-md-offset-5">
+          <form action="/" method="post">
+              <p>是否開啟自動控制:</p>
+              <button type="submit">YES/NO</button>
+            </form>
+      </div>  
+    </div>
     <div class="col-md-offset-1 col-md-12 col-sm-12">
       <h1>ET-7044</h1>
       <P>Digital Output ( 01 - 08 ) controller ; <u>Click button to switch ON/OFF status</u> </h5>
@@ -121,6 +129,9 @@
         </form>
       </div>
       </div>
+      <div class="row">
+    
+      </div>
     </div>
   </div>
   <div class="container-fluid" style="margin-top:50px;background-color:#F8F8F8">
@@ -174,14 +185,14 @@
         labels: dl303num,
         datasets: [{
             label: 'CO2 (ppm)',
-            data: CO2,
+            data: CO2.reverse(),
             fill: false,
             backgroundColor: "rgba(206, 100, 100, 1)",
             pointBackgroundColor: '#fff',
             borderColor: "rgba(206, 100, 100, 1)",
           }, {
             label: 'Temperature (*C)',
-            data: Temperature,
+            data: Temperature.reverse(),
             fill: false,
             backgroundColor: "#648BD0",
             pointBackgroundColor: '#fff',
@@ -189,7 +200,7 @@
           },
           {
             label: 'Humidity (%)',
-            data: Humidity,
+            data: Humidity.reverse(),
             fill: false,
             pointBackgroundColor: '#fff',
             backgroundColor: "rgba(100,100,126,0.1)"
