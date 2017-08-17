@@ -16,34 +16,15 @@ MongoClient.connect("mongodb://localhost:27017/Factory", function (err, pDb) {
     }
     db = pDb;
 });
-
 var router = new Router();
 const logger = require('koa-logger');
-
 //mqtt
-var client = mqtt.connect('mqtt://10.28.120.17');
+var client = mqtt.connect('mqtt://60.249.15.85:1883');
+//var client = mqtt.connect('mqtt://10.28.120.17');
 client.on('connect', function () {
     console.log('connect to MQTT server');
     client.subscribe('ET7044/DOstatus');
 });
-client.on('error', function(err) {
-  console.log('mqtt on error', err);
-});
-
-client.on('disconnect', function() {
-  console.log('mqtt on disconnect');
-});
-
-client.on('reconnect', function() {
-  console.log('mqtt on reconnect');
-});
-
-client.on('offline', function() {
-  console.log('mqtt on offline');
-});
-
-
-
 //socket.io on
 var DO_json ;
 var DO1;
@@ -133,9 +114,9 @@ var showPM3133data = function showPM3133data(done) {
     collection.find({}).limit(30).toArray(function (err, data) {
         for (var i = 0; i < data.length; i++) {
             A_JSON[i] = data[i].PM3133_A,
-                B_JSON[i] = data[i].PM3133_B,
-                C_JSON[i] = data[i].PM3133_C,
-                pm3133num[i] = i;
+            B_JSON[i] = data[i].PM3133_B,
+            C_JSON[i] = data[i].PM3133_C,
+            pm3133num[i] = i;
             // PM3133 A
             PM3133V_a[i] = A_JSON[i]['V_a'];
             PM3133I_a[i] = A_JSON[i]['I_a'];

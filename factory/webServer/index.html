@@ -121,6 +121,9 @@
         </form>
       </div>
       </div>
+      <div class="row">
+    
+      </div>
     </div>
   </div>
   <div class="container-fluid" style="margin-top:50px;background-color:#F8F8F8">
@@ -174,14 +177,14 @@
         labels: dl303num,
         datasets: [{
             label: 'CO2 (ppm)',
-            data: CO2,
+            data: CO2.reverse(),
             fill: false,
             backgroundColor: "rgba(206, 100, 100, 1)",
             pointBackgroundColor: '#fff',
             borderColor: "rgba(206, 100, 100, 1)",
           }, {
             label: 'Temperature (*C)',
-            data: Temperature,
+            data: Temperature.reverse(),
             fill: false,
             backgroundColor: "#648BD0",
             pointBackgroundColor: '#fff',
@@ -189,7 +192,7 @@
           },
           {
             label: 'Humidity (%)',
-            data: Humidity,
+            data: Humidity.reverse(),
             fill: false,
             pointBackgroundColor: '#fff',
             backgroundColor: "rgba(100,100,126,0.1)"

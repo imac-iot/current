@@ -1,8 +1,8 @@
 
 //connect mqtt
 var mqtt = require('mqtt')
-//var mqttClient = mqtt.connect('mqtt://10.28.120.17:1883')
-var mqttClient = mqtt.connect();
+var mqttClient = mqtt.connect('mqtt://60.249.15.85:1883')
+//var mqttClient = mqtt.connect();
 mqttClient.on('connect', function () {
     console.log('mqtt connect');
     mqttClient.subscribe('DL303/#') 
@@ -29,6 +29,7 @@ var DL303_dewp;
 
 // ET7044 dev's var
 var ET7044_DOstatus;
+var temp_DOcontrol;
 
 //PM3133
 var PM3133_A_Json;
@@ -49,6 +50,10 @@ mqttClient.on('message', function (topic, message) {
             break;
         case 'DL303/TC':
             DL303_temp = message.toString();
+            if(message >26.5 ){
+                temp_DOcontrol[2] = true;            
+                mqttClient.publish('ET7044/write',JSON.stringify(temp_DOcontrol));
+            }
             console.log('get DL303/TF message: %s', message)
             break;
         case 'DL303/DC':
@@ -57,12 +62,12 @@ mqttClient.on('message', function (topic, message) {
             break;  
         case 'ET7044/DOstatus':
             ET7044_DOstatus = message.toString();
-            console.log(ET7044_DOstatus);
+            temp_DOcontrol = JSON.parse(message);
+            console.log(temp_DOcontrol);
             console.log('get ET7044/DOstatus message: %s', message)
             break;
         case 'PM3133/A':
             PM3133_A_Json = JSON.parse(message);
-            console.log(typeof(PM3133_A_Json));
             console.log('get PM3133/A message: %s', message)
             break; 
         case 'PM3133/B':
@@ -76,7 +81,6 @@ mqttClient.on('message', function (topic, message) {
         
     }
     topic = ""; //目前topic歸零 
-   // console.log('----------------------'); 
     //判斷資料有收到 !=null
     if (DL303_co2!=null && DL303_humi!=null && DL303_temp!=null && DL303_dewp!=null  ){
         insertDL303Data();  
@@ -93,7 +97,7 @@ mqttClient.on('message', function (topic, message) {
 function insertDL303Data() {
     var date = new Date();
     dataInsertTime = date.getTime();
-    console.log('insert DL303\'s data to mongodb...');
+    //onsole.log('insert DL303\'s data to mongodb...');
     var collection = db.collection('DL303');
     collection.insert({
         CO2:DL303_co2,
@@ -113,11 +117,11 @@ function insertDL303Data() {
 function insertET7044Data() {
     var date = new Date();
     et7044dataInsertTime = date.getTime();
-    console.log('insert ET7044\'s  data to mongodb...');
-    console.log(ET7044_DOstatus);
+    //console.log('insert ET7044\'s  data to mongodb...');
+    //console.log(ET7044_DOstatus);
     var collection = db.collection('ET7044');
     collection.insert({
-    DOstatus:ET7044_DOstatus,
+        DOstatus:ET7044_DOstatus,
         InsertTime:et7044dataInsertTime,
     })
     //清除資料
@@ -128,7 +132,7 @@ function insertET7044Data() {
 function insertPM3133Data() {
     var date = new Date();
     dataInsertTime = date.getTime();
-    console.log('insert PM3133\'s data to mongodb...');
+    //console.log('insert PM3133\'s data to mongodb...');
     var collection = db.collection('PM3133');
     collection.insert({
         PM3133_A:PM3133_A_Json,
