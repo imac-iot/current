@@ -50,11 +50,8 @@ mqttClient.on('message', function (topic, message) {
             break;
         case 'DL303/TC':
             DL303_temp = message.toString();
-            if(message >= 27 ){
+            if(message >26.5 ){
                 temp_DOcontrol[2] = true;            
-                mqttClient.publish('ET7044/write',JSON.stringify(temp_DOcontrol));
-            }else{
-                temp_DOcontrol[2] = false;
                 mqttClient.publish('ET7044/write',JSON.stringify(temp_DOcontrol));
             }
             console.log('get DL303/TF message: %s', message)
