@@ -40,12 +40,14 @@ var currents = 0;
 // arduino data insert
 function plusdata(){
   var collection = db.collection('datas');
+  if(humi && temp && currents){
      collection.insert({
       Humidity:humi,
       Temperature:temp,
       Currents:currents,
       inserttime:date.getTime(),
     });
+  }
     console.log('insert ok');
 };
 //mongo data find
