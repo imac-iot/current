@@ -36,47 +36,62 @@ var PM3133_A_Json;
 var PM3133_B_Json;
 var PM3133_C_Json;
 
+//input post var 
+var checkSelect;
+var tempSettiong;
+
 //mqtt client
 mqttClient.on('message', function (topic, message) {
     console.log(topic);
     switch (topic) {
         case 'DL303/CO2':
             DL303_co2 = message.toString();
-            console.log('get DL303/CO2 message: %s', message)
+            //console.log('get DL303/CO2 message: %s', message)
             break;
         case 'DL303/RH':
             DL303_humi = message.toString();
-            console.log('get DL303/RH message: %s', message)
+            //console.log('get DL303/RH message: %s', message)
             break;
         case 'DL303/TC':
             DL303_temp = message.toString();
-            if(message >26.5 ){
-                temp_DOcontrol[2] = true;            
-                mqttClient.publish('ET7044/write',JSON.stringify(temp_DOcontrol));
-            }
+            var collection = db.collection('selectCheckbox');
+            collection.find({}).limit(1).sort( { InsertTime: -1 } ).toArray(function (err, data) {
+                checkSelect = data[0].checkSelect,
+                tempSettiong = data[0].tempAutoSetting,
+                console.log('checkBox status: '+checkSelect);
+                console.log('temp Auto Setting: '+tempSettiong);
+            });
+            if(checkSelect == 'on'){
+                if(message >tempSettiong ){
+                    temp_DOcontrol[2] = true;            
+                    mqttClient.publish('ET7044/write',JSON.stringify(temp_DOcontrol));
+                }else{
+                    temp_DOcontrol[2] = false;            
+                    mqttClient.publish('ET7044/write',JSON.stringify(temp_DOcontrol));
+                }
+            }     
             console.log('get DL303/TF message: %s', message)
             break;
         case 'DL303/DC':
             DL303_dewp = message.toString();
-            console.log('get DL303/DC message: %s', message) 
+            //console.log('get DL303/DC message: %s', message) 
             break;  
         case 'ET7044/DOstatus':
             ET7044_DOstatus = message.toString();
             temp_DOcontrol = JSON.parse(message);
-            console.log(temp_DOcontrol);
-            console.log('get ET7044/DOstatus message: %s', message)
+            //console.log('get ET7044/DOstatus message: %s', message)
             break;
         case 'PM3133/A':
             PM3133_A_Json = JSON.parse(message);
-            console.log('get PM3133/A message: %s', message)
+            //console.log('get PM3133/A message: %s', message)
             break; 
         case 'PM3133/B':
             PM3133_B_Json = JSON.parse(message);
-            console.log('get PM3133/B message: %s', message)
+            //console.log('get PM3133/B message: %s', message)
             break; 
         case 'PM3133/C':
             PM3133_C_Json = JSON.parse(message);
-            console.log('get PM3133/C message: %s', message)
+            //console.log('get PM3133/C message: %s', message)
             break;      
         
     }

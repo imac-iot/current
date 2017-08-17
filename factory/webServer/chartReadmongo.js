@@ -203,6 +203,7 @@ router.get('/PM3133', function* () {
         "pm3133num": pm3133num,
     });
 });
+//btn control I/O dev
 var DObtnSwitch;
 router.post('/', function* () {
     DObtnSwitch = this.request.body;
@@ -232,19 +233,22 @@ router.post('/', function* () {
     client.publish('ET7044/write',mqttpub_DO);
     this.redirect('/');
 });
+
+//get input checkbox msg and insert to mongo;
 router.post('/isAuto',function * (){
     isAutoSelect = this.request.body;
-    console.log(isAutoSelect["checkSelect"]); 
+    console.log(isAutoSelect["tempSet"]); // input name = tempSet
+    console.log(isAutoSelect["checkSelect"]); //input name = checkSelect
     var date = new Date();
     selectInsertTime = date.getTime();
     var collection = db.collection('selectCheckbox');
     collection.insert({
         checkSelect:isAutoSelect["checkSelect"],
+        tempAutoSetting:isAutoSelect["tempSet"],
         InsertTime:selectInsertTime,
     })
     this.redirect('/');
 })
-
 app.use(bodyparser());
 app.use(router.middleware());
 server.listen(5500, function () {
