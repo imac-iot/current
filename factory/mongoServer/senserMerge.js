@@ -117,7 +117,7 @@ function insertET7044Data() {
     console.log(ET7044_DOstatus);
     var collection = db.collection('ET7044');
     collection.insert({
-    DOstatus:ET7044_DOstatus,
+        DOstatus:ET7044_DOstatus,
         InsertTime:et7044dataInsertTime,
     })
     //清除資料

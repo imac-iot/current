@@ -26,24 +26,6 @@ client.on('connect', function () {
     console.log('connect to MQTT server');
     client.subscribe('ET7044/DOstatus');
 });
-client.on('error', function(err) {
-  console.log('mqtt on error', err);
-});
-
-client.on('disconnect', function() {
-  console.log('mqtt on disconnect');
-});
-
-client.on('reconnect', function() {
-  console.log('mqtt on reconnect');
-});
-
-client.on('offline', function() {
-  console.log('mqtt on offline');
-});
-
-
-
 //socket.io on
 var DO_json ;
 var DO1;
