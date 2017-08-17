@@ -35,6 +35,8 @@ var D05;
 var D06;
 var D07;
 var D08;
+var selectStatus;
+var tempSetting;
 io.on('connection', function (socket) {
     console.log('socket.io connected');
     client.on('message', function (topic, msg) {
@@ -42,13 +44,19 @@ io.on('connection', function (socket) {
         DO_json = JSON.parse(msg);
         //console.log(DO_json);
         D01 = DO_json[0];
-        D02 = DO_json[1];
+        D02 = DO_json[1];   
         D03 = DO_json[2];
         D04 = DO_json[3];
         D05 = DO_json[4];
         D06 = DO_json[5];
         D07 = DO_json[6];
         D08 = DO_json[7];
+        socket.emit('isAuto',{
+            data:selectStatus
+        })
+        socket.emit('tempSetting',{
+            data:tempSetting
+        })
         socket.emit('ET7044_DO1', {
             data: D01
         })
@@ -237,16 +245,23 @@ router.post('/', function* () {
 //get input checkbox msg and insert to mongo;
 router.post('/isAuto',function * (){
     isAutoSelect = this.request.body;
-    console.log(isAutoSelect["tempSet"]); // input name = tempSet
-    console.log(isAutoSelect["checkSelect"]); //input name = checkSelect
+    // console.log(isAutoSelect["tempSet"]); // input name = tempSet
+    // console.log(isAutoSelect["checkSelect"]); //input name = checkSelect
+    selectStatus = isAutoSelect["checkSelect"];
+    tempSetting = isAutoSelect["tempSet"];
+    console.log('>>>>>>>>>>>>>>'+tempSetting);
     var date = new Date();
     selectInsertTime = date.getTime();
     var collection = db.collection('selectCheckbox');
-    collection.insert({
-        checkSelect:isAutoSelect["checkSelect"],
-        tempAutoSetting:isAutoSelect["tempSet"],
-        InsertTime:selectInsertTime,
-    })
+    if(tempSetting != ""){
+        collection.insert({
+            checkSelect:isAutoSelect["checkSelect"],
+            tempAutoSetting:isAutoSelect["tempSet"],
+            InsertTime:selectInsertTime,
+        })
+    }else{
+        console.log('null.......');
+    }
     this.redirect('/');
 })
 app.use(bodyparser());

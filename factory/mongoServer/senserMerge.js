@@ -62,13 +62,17 @@ mqttClient.on('message', function (topic, message) {
                 console.log('temp Auto Setting: '+tempSettiong);
             });
             if(checkSelect == 'on'){
-                if(message >tempSettiong ){
-                    temp_DOcontrol[2] = true;            
-                    mqttClient.publish('ET7044/write',JSON.stringify(temp_DOcontrol));
-                }else{
-                    temp_DOcontrol[2] = false;            
-                    mqttClient.publish('ET7044/write',JSON.stringify(temp_DOcontrol));
-                }
+                if(tempSettiong != ""){
+                    if( message > tempSettiong ){
+                        temp_DOcontrol[2] = true;            
+                        mqttClient.publish('ET7044/write',JSON.stringify(temp_DOcontrol));
+                    }else{
+                        temp_DOcontrol[2] = false;            
+                        mqttClient.publish('ET7044/write',JSON.stringify(temp_DOcontrol));
+                        }
+                }else(
+                    console.log('tempSetting = null')
+                )
             }     
             console.log('get DL303/TF message: %s', message)
             break;

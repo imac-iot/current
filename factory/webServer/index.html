@@ -59,6 +59,10 @@
           <input type="text" name="tempSet"/>
           <input type="checkbox" name="checkSelect" checked/> auto control
           <input type="submit" class="btn"></button>
+          <p >Auto control select:</p>  
+          <p style="display:inline"id= "isAuto" class="textcolor">---</p>
+          <p >select Temperature:</p>
+          <p style="display:inline" id= "tempSetting" class="textcolor">---</p>
       </form>
     </div>
     <div class="row col-md-12 col-lg-12 margin-adjust" style="margin-top:10px">
@@ -146,6 +150,12 @@
   <script>
     //socket.io connect to server
     var socket = io.connect('http://127.0.0.1:5500'); 
+    socket.on('tempSetting', function (msg) {
+      $('#tempSetting').text(msg.data)
+    });
+    socket.on('isAuto', function (msg) {
+      $('#isAuto').text(msg.data)
+    });
     socket.on('ET7044_DO1', function (msg) {
       $('#ET7044_DO1').text(msg.data)
     });
