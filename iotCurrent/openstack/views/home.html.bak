@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>感測值統計系統</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <style>
+    body {
+      background: url(/img/background.png) no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    h3 {
+      color: #524C4C;
+    }
+
+    .P_color {
+      color: #555555;
+    }
+
+    .P_color2 {
+      color: #303030;
+    }
+    p{
+      display: inline;
+    }
+    .barColor{
+      background:rgb(12, 14, 14);
+    }
+    a{
+      color:rgb(238, 229, 230);
+    }
+   h3,h4{
+	display:inline;
+	}
+  </style>
+  <script>
+    var socket = io.connect('http://10.28.120.17:3000'); // 連線至伺服器
+
+     socket.on('dustDensity', function (data) {
+      $('#dustDensity').text(data.data)
+    });
+    socket.on('humi', function (data) {
+      $('#humi').text(data.data)
+    });
+
+    socket.on('temp', function (data) {
+      $('#temp').text(data.data)
+    });
+
+    socket.on('event', function (data) {
+      $('#date').text(data.data)
+    });
+    socket.on('power', function (data) {
+      $('#power').text(data.data)
+    });
+    socket.on('price', function (data) {
+      $('#cost').text(data.data)
+    });
+    socket.on('money', function (data) {
+      $('#money').text(data.data)
+    });
+
+    function data() {
+      socket.emit('client_data', {
+        'data': $('#price').val()
+      });
+    }
+  </script>
+</head>
+
+<body>
+  <div class="container-fluid " style="margin-top:0%">
+    <div class="row barColor">
+      <ul class="nav nav-tabs">
+       <li role="presentation"><a href="/">Home</a></li>
+       <li role="presentation"><a href="/line">Line</a></li>
+      </ul>
+    </div>
+    <div class="row col-md-5 col-md-offset-3 col-sm-6 col-sm-offset-2 col-xs-8 col-xs-offset-1">
+      <div class="row" style="margin-top:100px">
+        <h1>Humidity and Temperature:</h1>
+        <h3>目前溫度:</h3>
+        <h3 id="temp"></h3>
+        <h3>*C</h3>
+        <br>
+        <h3>目前濕度:</h3>
+        <h3 id="humi"></h3>
+        <h3> %</h3>
+      </div>
+
+      <div class="row">
+        <hr>
+        <h1>Alternating current:</h1>
+          <h3>目前電流:</h3>
+          <h3 id="date"></h3>
+          <h3>A ( 安培 )</h3>
+          <br>
+          <h3>目前使用度數:</h3>
+          <h3 id="power"></h3>
+          <h3>度</h3>
+          <br>
+          <h3>目前每度費率:</h3>
+          <h3 id="cost"></h3>
+          <h3>元</h3>
+          <br>
+          <h3>目前應繳金額:</h3>
+          <h3 id="money"></h3>
+          <h3>元</h3>
+          <br>
+          <br>
+          <input type="text" id="price" placeholder="update price value"></input>
+          <input type="button" value="送出" class="btn btn-default" onclick="javascript:data() "></input>
+      </div>
+    </div>
+  </div>
+  </div>
+</body>
+
+</html>
