@@ -54,6 +54,16 @@
     <div class="col-md-offset-1 col-md-12 col-sm-12">
       <h1>ET-7044</h1>
       <P>Digital Output ( 01 - 08 ) controller ; <u>Click button to switch ON/OFF status</u> </h5>
+      <form action="/isAuto" method="post">
+          Auto Temperature setting:
+          <input type="text" name="tempSet"/>
+          <input type="checkbox" name="checkSelect" checked/> auto control
+          <input type="submit" class="btn"></button>
+          <p >Auto control select:</p>  
+          <p style="display:inline"id= "isAuto" class="textcolor">---</p>
+          <p >select Temperature:</p>
+          <p style="display:inline" id= "tempSetting" class="textcolor">---</p>
+      </form>
     </div>
     <div class="row col-md-12 col-lg-12 margin-adjust" style="margin-top:10px">
       <div class="col-md-2 col-sm-10 col-xs-10 col-md-offset-1 col-lg-2">
@@ -121,6 +131,9 @@
         </form>
       </div>
       </div>
+      <div class="row">
+    
+      </div>
     </div>
   </div>
   <div class="container-fluid" style="margin-top:50px;background-color:#F8F8F8">
@@ -136,7 +149,13 @@
 
   <script>
     //socket.io connect to server
-    var socket = io.connect('http://10.28.120.17:5500'); 
+    var socket = io.connect('http://127.0.0.1:5500'); 
+    socket.on('tempSetting', function (msg) {
+      $('#tempSetting').text(msg.data)
+    });
+    socket.on('isAuto', function (msg) {
+      $('#isAuto').text(msg.data)
+    });
     socket.on('ET7044_DO1', function (msg) {
       $('#ET7044_DO1').text(msg.data)
     });
@@ -174,14 +193,14 @@
         labels: dl303num,
         datasets: [{
             label: 'CO2 (ppm)',
-            data: CO2,
+            data: CO2.reverse(),
             fill: false,
             backgroundColor: "rgba(206, 100, 100, 1)",
             pointBackgroundColor: '#fff',
             borderColor: "rgba(206, 100, 100, 1)",
           }, {
             label: 'Temperature (*C)',
-            data: Temperature,
+            data: Temperature.reverse(),
             fill: false,
             backgroundColor: "#648BD0",
             pointBackgroundColor: '#fff',
@@ -189,7 +208,7 @@
           },
           {
             label: 'Humidity (%)',
-            data: Humidity,
+            data: Humidity.reverse(),
             fill: false,
             pointBackgroundColor: '#fff',
             backgroundColor: "rgba(100,100,126,0.1)"

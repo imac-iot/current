@@ -1,0 +1,14 @@
+
+var mqtt = require('mqtt');
+var client = mqtt.connect('mqtt://192.168.0.26');
+client.on('connect',function(){
+    console.log('connect to MQTT server');
+    client.publish('PM3133/A',"1");
+    client.publish('PM3133/B',"2");
+    client.publish('PM3133/C',"3");
+});
+// client.on('message',function(topic,msg){
+//     console.log('receive topic: ' + topic + ' content: ' + msg.toString());
+// });
+
+

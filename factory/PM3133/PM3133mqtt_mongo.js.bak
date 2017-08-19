@@ -70,15 +70,3 @@ function insertPM3133Data() {
 };
 
 
-
-mqttClient.on('disconnect', function() {
-  console.log('mqtt on disconnect');
-});
-
-mqttClient.on('reconnect', function() {
-  console.log('mqtt on reconnect');
-});
-
-mqttClient.on('offline', function() {
-  console.log('on offline');
-});

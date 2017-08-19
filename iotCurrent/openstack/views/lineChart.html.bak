@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+      body {
+        background: url(/img/background.png) no-repeat center center fixed;
+        background-size: cover;
+      }
+      .barColor{
+        background:rgb(12, 14, 14);
+      }
+      a{
+        color:rgb(238, 229, 230);
+      }
+    </style>
+    <title>電流監控系統</title>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row barColor">
+        <ul class="nav nav-tabs">
+         <li role="presentation"><a href="/">Home</a></li>
+         <li role="presentation"><a href="/line">Line</a></li>
+        </ul>
+      </div>
+      <div class="row" style="margin-top:80px">
+       <div class="col-md-10 col-md-offset-1">
+          <canvas id="myChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+        labels: [{{timeAry}}],
+        datasets: [{
+          label: 'Current',
+          fill:false,
+          data: [{{currentAry}}],
+          pointBackgroundColor: '#fff',
+          backgroundColor: "#91989F",
+          borderColor:"#91989F"
+        },{
+          label: 'Power',
+          fill:false,
+          data: [{{powerAry}}],
+          backgroundColor: "rgb(61, 82, 222)",
+          pointBackgroundColor: '#fff',
+	  borderColor:"rgb(61, 82, 222)"
+        },{
+          label: 'Temperature',
+          fill:false,
+          data: [{{temperatureAry}}],
+          pointBackgroundColor: '#fff',
+	  backgroundColor: "#7BA23F",
+          borderColor:"#7BA23F"
+        },{
+          label: 'Humidity',
+          fill:false,
+          data: [{{humidityAry}}],
+	  pointBackgroundColor: '#fff',
+          backgroundColor: "#F9BF45",
+          borderColor:"#F9BF45"
+        }]
+      }
+    });
+    </script>
+  </body>
+</html>

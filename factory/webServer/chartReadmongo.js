@@ -16,12 +16,11 @@ MongoClient.connect("mongodb://localhost:27017/Factory", function (err, pDb) {
     }
     db = pDb;
 });
-
 var router = new Router();
 const logger = require('koa-logger');
-
 //mqtt
-var client = mqtt.connect('mqtt://10.28.120.17');
+var client = mqtt.connect('mqtt://60.249.15.85:1883');
+//var client = mqtt.connect('mqtt://10.28.120.17');
 client.on('connect', function () {
     console.log('connect to MQTT server');
     client.subscribe('ET7044/DOstatus');
@@ -36,6 +35,8 @@ var D05;
 var D06;
 var D07;
 var D08;
+var selectStatus;
+var tempSetting;
 io.on('connection', function (socket) {
     console.log('socket.io connected');
     client.on('message', function (topic, msg) {
@@ -43,13 +44,19 @@ io.on('connection', function (socket) {
         DO_json = JSON.parse(msg);
         //console.log(DO_json);
         D01 = DO_json[0];
-        D02 = DO_json[1];
+        D02 = DO_json[1];   
         D03 = DO_json[2];
         D04 = DO_json[3];
         D05 = DO_json[4];
         D06 = DO_json[5];
         D07 = DO_json[6];
         D08 = DO_json[7];
+        socket.emit('isAuto',{
+            data:selectStatus
+        })
+        socket.emit('tempSetting',{
+            data:tempSetting
+        })
         socket.emit('ET7044_DO1', {
             data: D01
         })
@@ -115,9 +122,9 @@ var showPM3133data = function showPM3133data(done) {
     collection.find({}).limit(30).toArray(function (err, data) {
         for (var i = 0; i < data.length; i++) {
             A_JSON[i] = data[i].PM3133_A,
-                B_JSON[i] = data[i].PM3133_B,
-                C_JSON[i] = data[i].PM3133_C,
-                pm3133num[i] = i;
+            B_JSON[i] = data[i].PM3133_B,
+            C_JSON[i] = data[i].PM3133_C,
+            pm3133num[i] = i;
             // PM3133 A
             PM3133V_a[i] = A_JSON[i]['V_a'];
             PM3133I_a[i] = A_JSON[i]['I_a'];
@@ -204,7 +211,7 @@ router.get('/PM3133', function* () {
         "pm3133num": pm3133num,
     });
 });
-
+//btn control I/O dev
 var DObtnSwitch;
 router.post('/', function* () {
     DObtnSwitch = this.request.body;
@@ -234,6 +241,29 @@ router.post('/', function* () {
     client.publish('ET7044/write',mqttpub_DO);
     this.redirect('/');
 });
+
+//get input checkbox msg and insert to mongo;
+router.post('/isAuto',function * (){
+    isAutoSelect = this.request.body;
+    // console.log(isAutoSelect["tempSet"]); // input name = tempSet
+    // console.log(isAutoSelect["checkSelect"]); //input name = checkSelect
+    selectStatus = isAutoSelect["checkSelect"];
+    tempSetting = isAutoSelect["tempSet"];
+    console.log('>>>>>>>>>>>>>>'+tempSetting);
+    var date = new Date();
+    selectInsertTime = date.getTime();
+    var collection = db.collection('selectCheckbox');
+    if(tempSetting != ""){
+        collection.insert({
+            checkSelect:isAutoSelect["checkSelect"],
+            tempAutoSetting:isAutoSelect["tempSet"],
+            InsertTime:selectInsertTime,
+        })
+    }else{
+        console.log('null.......');
+    }
+    this.redirect('/');
+})
 app.use(bodyparser());
 app.use(router.middleware());
 server.listen(5500, function () {
