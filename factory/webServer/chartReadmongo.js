@@ -119,7 +119,7 @@ var pm3133num = new Array();
 
 var showPM3133data = function showPM3133data(done) {
     var collection = db.collection('PM3133');
-    collection.find({}).limit(30).toArray(function (err, data) {
+    collection.find({}).sort( { InsertTime: -1 }).limit(30).toArray(function (err, data) {
         for (var i = 0; i < data.length; i++) {
             A_JSON[i] = data[i].PM3133_A,
             B_JSON[i] = data[i].PM3133_B,
