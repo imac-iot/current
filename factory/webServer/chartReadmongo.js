@@ -35,12 +35,12 @@ var D05;
 var D06;
 var D07;
 var D08;
-var selectStatus;
+var selectStatus = "";
 var tempSetting;
 io.on('connection', function (socket) {
     console.log('socket.io connected');
     client.on('message', function (topic, msg) {
-        console.log('receive topic: ' + topic );
+        //console.log('receive topic: ' + topic );
         DO_json = JSON.parse(msg);
         //console.log(DO_json);
         D01 = DO_json[0];
@@ -51,6 +51,9 @@ io.on('connection', function (socket) {
         D06 = DO_json[5];
         D07 = DO_json[6];
         D08 = DO_json[7];
+        socket.emit('DO3btn',{
+            data:selectStatus
+        })
         socket.emit('isAuto',{
             data:selectStatus
         })
@@ -145,10 +148,7 @@ var showPM3133data = function showPM3133data(done) {
             PM3133kW_c[i] = C_JSON[i]['kW_c'];
             PM3133kvar_c[i] = C_JSON[i]['kvar_c'];
             PM3133kVA_c[i] = C_JSON[i]['kVA_c'];
-            // console.log('B:');
-            // console.log(B_JSON);
-            // console.log('C:');
-            // console.log(C_JSON);
+            
         }
         done();
     });
@@ -183,9 +183,9 @@ router.get('/', function* () {
         "Humidity": humi,
         "Inserttime": time,
         "dl303num": dl303num,
+        "selectStatus": selectStatus,
     });
 });
-
 
 router.get('/PM3133', function* () {
     yield showPM3133data;
@@ -214,10 +214,7 @@ router.get('/PM3133', function* () {
 //btn control I/O dev
 var DObtnSwitch;
 router.post('/', function* () {
-    // DObtnSwitch = this.request.body.dataBtn;
-    // DO = DObtnSwitch["DO"].toString();
     DO = this.request.body.dataBtn;
-    console.log(DO);
     console.log(DO_json);
     var a;
     if(DO == "DO1")
@@ -246,23 +243,23 @@ router.post('/', function* () {
 //get input checkbox msg and insert to mongo;
 router.post('/isAuto',function * (){
     isAutoSelect = this.request.body;
-    // console.log(isAutoSelect["tempSet"]); // input name = tempSet
-    // console.log(isAutoSelect["checkSelect"]); //input name = checkSelect
-    selectStatus = isAutoSelect["checkSelect"];
-    tempSetting = isAutoSelect["tempSet"];
-    console.log('>>>>>>>>>>>>>>'+tempSetting);
+    selectStatus = isAutoSelect["checkSelect"];// input name = tempSet
+    tempSetting = isAutoSelect["tempSet"];//input name = checkSelect
     var date = new Date();
     selectInsertTime = date.getTime();
     var collection = db.collection('selectCheckbox');
+    if(selectStatus != "on"){
+        selectStatus = "off"
     if(tempSetting != ""){
         collection.insert({
-            checkSelect:isAutoSelect["checkSelect"],
+            checkSelect:selectStatus,
             tempAutoSetting:isAutoSelect["tempSet"],
             InsertTime:selectInsertTime,
         })
     }else{
         console.log('null.......');
     }
+}
     this.redirect('/');
 })
 app.use(bodyparser());
