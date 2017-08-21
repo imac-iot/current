@@ -157,6 +157,7 @@ function insertPM3133Data() {
         PM3133_A:PM3133_A_Json,
         PM3133_B:PM3133_B_Json,
         PM3133_C:PM3133_C_Json,
+        InsertTime:dataInsertTime,
     })
     //清除資料
     PM3133_A_Json=null;
