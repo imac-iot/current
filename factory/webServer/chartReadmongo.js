@@ -44,7 +44,7 @@ io.on('connection', function (socket) {
         DO_json = JSON.parse(msg);
         //console.log(DO_json);
         D01 = DO_json[0];
-        D02 = DO_json[1];   
+        D02 = DO_json[1];
         D03 = DO_json[2];
         D04 = DO_json[3];
         D05 = DO_json[4];
@@ -214,13 +214,14 @@ router.get('/PM3133', function* () {
 //btn control I/O dev
 var DObtnSwitch;
 router.post('/', function* () {
-    DObtnSwitch = this.request.body;
-    DO = DObtnSwitch["DO"].toString();
+    // DObtnSwitch = this.request.body.dataBtn;
+    // DO = DObtnSwitch["DO"].toString();
+    DO = this.request.body.dataBtn;
     console.log(DO);
     console.log(DO_json);
     var a;
     if(DO == "DO1")
-    {    a = 0; }
+    { a = 0;}
      if(DO == "DO2")
     { a = 1;}
     if(DO == "DO3")

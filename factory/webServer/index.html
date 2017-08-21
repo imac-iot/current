@@ -1,228 +1,218 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>Factory</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.js"></script>
+    <script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+     .margin-adjust {
+        margin-top: 5%;
+      }
 
-<head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.js"></script>
-  <script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <style>
-
-   .margin-adjust {
-      margin-top: 5%;
-    }
      @media (max-width:575px){
-      .margin-adjust {
-      margin-top: 10%;
+       .margin-adjust {
+         margin-top: 10%;
+        }
       }
-    }
 
-    .textcolor{
-      color:#A54A55;
-    }
-    p{
-      color:#787575;
-    }
+     .textcolor{
+        color:#A54A55;
+      }
 
-  </style>
-  <script src="chart.js"></script>
-  <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-      <ul class="nav nav-pills">
-        <li role="presentation"><a style="color:#736C6C" href="#DL303">DL-303 & ET7044</a></li>
-        <li role="presentation"><a style="color:#736C6C" href="/PM3133">PM-3133</a></li>
-      </ul>
-    </div>
-  </nav>
-  <!-- chart.js  -->
-  <div class="container margin-adjust">
-
-    <div class="col-md-offset-1 margin-adjust">
-      <h1>DL-303</h1>
-      <p >CO2、Temperature and Humidity monitor</p>
-    </div>
-
-    <div class="row margin-top">
-      <div class="col-md-offset-1 col-md-10 col-sm-12">
-        <canvas id="DL303Chart"></canvas>
-      </div>
-    </div>
-
-  </div>
-  <div class="container">
-  <div class="row margin-adjust">
-    <div class="col-md-offset-1 col-md-12 col-sm-12">
-      <h1>ET-7044</h1>
-      <P>Digital Output ( 01 - 08 ) controller ; <u>Click button to switch ON/OFF status</u> </h5>
-      <form action="/isAuto" method="post">
-          Auto Temperature setting:
-          <input type="text" name="tempSet"/>
-          <input type="checkbox" name="checkSelect" checked/> auto control
-          <input type="submit" class="btn"></button>
-          <p >Auto control select:</p>  
-          <p style="display:inline"id= "isAuto" class="textcolor">---</p>
-          <p >select Temperature:</p>
-          <p style="display:inline" id= "tempSetting" class="textcolor">---</p>
-      </form>
-    </div>
-    <div class="row col-md-12 col-lg-12 margin-adjust" style="margin-top:10px">
-      <div class="col-md-2 col-sm-10 col-xs-10 col-md-offset-1 col-lg-2">
-        <h5>OUTPUT 01</h5>
-        <h4 id= "ET7044_DO1" class="textcolor" >---</h4>
-        <form action="/" method="post">
-          <input type="hidden" name="DO" value="DO1">
-          <button type="submit" class="btn btn-primary btn-block">ON/OFF</button>
-        </form>
-      </div>
-      <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
-        <h5>OUTPUT 02</h5>
-        <h4 id= "ET7044_DO2" class="textcolor">---</h4>
-        <form action="/" method="post">
-          <input type="hidden" name="DO" value="DO2">
-          <button type="submit" class="btn btn-primary btn-block">ON/OFF</button>
-        </form>
-      </div>
-      <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
-        <h5>OUTPUT 03</h5>
-        <h4 id= "ET7044_DO3" class="textcolor">---</h4>
-         <form action="/" method="post">
-          <input type="hidden" name="DO" value="DO3">
-          <button type="submit" class="btn btn-primary btn-block">ON/OFF</button>
-        </form>
-      </div>
-      <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
-        <h5>OUTPUT 04</h5>
-        <h4 id= "ET7044_DO4" class="textcolor">---</h4>
-        <form action="/" method="post">
-          <input type="hidden" name="DO" value="DO4">
-          <button type="submit" class="btn btn-primary btn-block">ON/OFF</button>
-        </form>
-      </div>
-      <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
-        <h5>OUTPUT 05</h5>
-        <h4 id= "ET7044_DO5" class="textcolor">---</h4>
-         <form action="/" method="post">
-          <input type="hidden" name="DO" value="DO5">
-          <button type="submit" class="btn btn-primary btn-block">ON/OFF</button>
-        </form>
-      </div>
-       <div class="col-md-2 col-md-offset-1 col-sm-10 col-xs-10 col-lg-2 col-lg-offset-1">
-        <h5>OUTPUT 06</h5>
-        <h4 id= "ET7044_DO6" class="textcolor">---</h4>
-         <form action="/" method="post">
-          <input type="hidden" name="DO" value="DO6">
-          <button type="submit" class="btn btn-primary btn-block">ON/OFF</button>
-        </form>
-      </div>
-      <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
-        <h5>OUTPUT 07</h5>
-        <h4 id= "ET7044_DO7" class="textcolor">---</h4>
-         <form action="/" method="post">
-          <input type="hidden" name="DO" value="DO7">
-          <button type="submit" class="btn btn-primary btn-block">ON/OFF</button>
-        </form>
-      </div>
-      <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
-        <h5>OUTPUT 08</h5>
-        <h4 id= "ET7044_DO8" class="textcolor">---</h4>
-         <form action="/" method="post">
-          <input type="hidden" name="DO" value="DO8">
-          <button type="submit" class="btn btn-primary btn-block">ON/OFF</button>
-        </form>
-      </div>
-      </div>
-      <div class="row">
-    
-      </div>
-    </div>
-  </div>
-  <div class="container-fluid" style="margin-top:50px;background-color:#F8F8F8">
-     <div class="row">
-       <div class="col-md-offset-11 col-xs-offset-11 col-sm-offset-11 col-lg-offset-11">
-         <footer >
-           <p style="margin-top:15px">imac</p>
-         </footer>
-       </div>
-
-    </div>
-  </div>
-
-  <script>
-    //socket.io connect to server
-    var socket = io.connect('http://127.0.0.1:5500'); 
-    socket.on('tempSetting', function (msg) {
-      $('#tempSetting').text(msg.data)
-    });
-    socket.on('isAuto', function (msg) {
-      $('#isAuto').text(msg.data)
-    });
-    socket.on('ET7044_DO1', function (msg) {
-      $('#ET7044_DO1').text(msg.data)
-    });
-    socket.on('ET7044_DO2', function (msg) {
-      $('#ET7044_DO2').text(msg.data)
-    });
-    socket.on('ET7044_DO3', function (msg) {
-      $('#ET7044_DO3').text(msg.data)
-    });
-    socket.on('ET7044_DO4', function (msg) {
-      $('#ET7044_DO4').text(msg.data)
-    });
-    socket.on('ET7044_DO5', function (msg) {
-      $('#ET7044_DO5').text(msg.data)
-    });
-    socket.on('ET7044_DO6', function (msg) {
-      $('#ET7044_DO6').text(msg.data)
-    });
-    socket.on('ET7044_DO7', function (msg) {
-      $('#ET7044_DO7').text(msg.data)
-    });
-     socket.on('ET7044_DO8', function (msg) {
-      $('#ET7044_DO8').text(msg.data)
-    });
-    //get chart.js  var
-    var CO2 = [{{CO2}}];
-    var Temperature = [{{Temperature}}];
-    var Humidity = [{{Humidity}}];
-    var dl303num = [{{dl303num}}];
-    //chart 01
-    var ctx = document.getElementById('DL303Chart').getContext('2d');
-    var myChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: dl303num,
-        datasets: [{
-            label: 'CO2 (ppm)',
-            data: CO2.reverse(),
-            fill: false,
-            backgroundColor: "rgba(206, 100, 100, 1)",
-            pointBackgroundColor: '#fff',
-            borderColor: "rgba(206, 100, 100, 1)",
-          }, {
-            label: 'Temperature (*C)',
-            data: Temperature.reverse(),
-            fill: false,
-            backgroundColor: "#648BD0",
-            pointBackgroundColor: '#fff',
-            borderColor: "#648BD0",
-          },
-          {
-            label: 'Humidity (%)',
-            data: Humidity.reverse(),
-            fill: false,
-            pointBackgroundColor: '#fff',
-            backgroundColor: "rgba(100,100,126,0.1)"
+     p{
+        color:#787575;
+      }
+    </style>
+    <script src="chart.js"></script>
+    <script>
+      //socket.io connect to server
+      var socket = io.connect('http://127.0.0.1:5500');
+      socket.on('tempSetting', function (msg) {
+        $('#tempSetting').text(msg.data)
+      });
+      socket.on('isAuto', function (msg) {
+        $('#isAuto').text(msg.data)
+      });
+      socket.on('ET7044_DO1', function (msg) {
+        $('#ET7044_DO1').text(msg.data)
+      });
+      socket.on('ET7044_DO2', function (msg) {
+        $('#ET7044_DO2').text(msg.data)
+      });
+      socket.on('ET7044_DO3', function (msg) {
+        $('#ET7044_DO3').text(msg.data)
+      });
+      socket.on('ET7044_DO4', function (msg) {
+        $('#ET7044_DO4').text(msg.data)
+      });
+      socket.on('ET7044_DO5', function (msg) {
+        $('#ET7044_DO5').text(msg.data)
+      });
+      socket.on('ET7044_DO6', function (msg) {
+        $('#ET7044_DO6').text(msg.data)
+      });
+      socket.on('ET7044_DO7', function (msg) {
+        $('#ET7044_DO7').text(msg.data)
+      });
+       socket.on('ET7044_DO8', function (msg) {
+        $('#ET7044_DO8').text(msg.data)
+      });
+    </script>
+    <script>
+      function ajaxBtn(dataBtn){
+        $.ajax({
+          type:"POST",
+          url:"/",
+          dataType:"text",
+          data:{
+            dataBtn:dataBtn
           }
-        ]
+        });
       }
-    });
+    </script>
+  </head>
 
-  </script>
-</head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <ul class="nav nav-pills">
+          <li role="presentation"><a style="color:#736C6C" href="#DL303">DL-303 & ET7044</a></li>
+          <li role="presentation"><a style="color:#736C6C" href="/PM3133">PM-3133</a></li>
+        </ul>
+      </div>
+    </nav>
+    <!-- chart.js  -->
+    <div class="container margin-adjust">
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>Factory</title>
+      <div class="col-md-offset-1 margin-adjust">
+        <h1>DL-303</h1>
+        <p >CO2、Temperature and Humidity monitor</p>
+      </div>
+
+      <div class="row margin-top">
+        <div class="col-md-offset-1 col-md-10 col-sm-12">
+          <canvas id="DL303Chart"></canvas>
+        </div>
+      </div>
+
+    </div>
+    <div class="container">
+    <div class="row margin-adjust">
+      <div class="col-md-offset-1 col-md-12 col-sm-12">
+        <h1>ET-7044</h1>
+        <P>Digital Output ( 01 - 08 ) controller ; <u>Click button to switch ON/OFF status</u> </h5>
+        <form action="/isAuto" method="post">
+            Auto Temperature setting:
+            <input type="text" name="tempSet"/>
+            <input type="checkbox" name="checkSelect" checked/> auto control
+            <input type="submit" class="btn"></button>
+            <p >Auto control select:</p>
+            <p style="display:inline"id= "isAuto" class="textcolor">---</p>
+            <p >select Temperature:</p>
+            <p style="display:inline" id= "tempSetting" class="textcolor">---</p>
+        </form>
+      </div>
+      <div class="row col-md-12 col-lg-12 margin-adjust" style="margin-top:10px">
+        <div class="col-md-2 col-sm-10 col-xs-10 col-md-offset-1 col-lg-2">
+          <h5>OUTPUT 01</h5>
+          <h4 id= "ET7044_DO1" class="textcolor" >---</h4>
+          <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO1')" />
+        </div>
+        <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
+          <h5>OUTPUT 02</h5>
+          <h4 id= "ET7044_DO2" class="textcolor">---</h4>
+          <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO2')" />
+        </div>
+        <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
+          <h5>OUTPUT 03</h5>
+          <h4 id= "ET7044_DO3" class="textcolor">---</h4>
+          <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO3')" />
+        </div>
+        <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
+          <h5>OUTPUT 04</h5>
+          <h4 id= "ET7044_DO4" class="textcolor">---</h4>
+          <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO4')" />
+        </div>
+        <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
+          <h5>OUTPUT 05</h5>
+          <h4 id= "ET7044_DO5" class="textcolor">---</h4>
+          <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO5')" />
+        </div>
+         <div class="col-md-2 col-md-offset-1 col-sm-10 col-xs-10 col-lg-2 col-lg-offset-1">
+          <h5>OUTPUT 06</h5>
+          <h4 id= "ET7044_DO6" class="textcolor">---</h4>
+          <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO6')" />
+        </div>
+        <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
+          <h5>OUTPUT 07</h5>
+          <h4 id= "ET7044_DO7" class="textcolor">---</h4>
+          <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO7')" />
+        </div>
+        <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
+          <h5>OUTPUT 08</h5>
+          <h4 id= "ET7044_DO8" class="textcolor">---</h4>
+          <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO8')" />
+        </div>
+        </div>
+        <div class="row">
+
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid" style="margin-top:50px;background-color:#F8F8F8">
+       <div class="row">
+         <div class="col-md-offset-11 col-xs-offset-11 col-sm-offset-11 col-lg-offset-11">
+           <footer >
+             <p style="margin-top:15px">imac</p>
+           </footer>
+         </div>
+
+      </div>
+    </div>
+    <script>
+      //get chart.js  var
+      var CO2 = [{{CO2}}];
+      var Temperature = [{{Temperature}}];
+      var Humidity = [{{Humidity}}];
+      var dl303num = [{{dl303num}}];
+      //chart 01
+      var ctx = document.getElementById('DL303Chart').getContext('2d');
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: dl303num,
+          datasets: [{
+              label: 'CO2 (ppm)',
+              data: CO2.reverse(),
+              fill: false,
+              backgroundColor: "rgba(206, 100, 100, 1)",
+              pointBackgroundColor: '#fff',
+              borderColor: "rgba(206, 100, 100, 1)",
+            }, {
+              label: 'Temperature (*C)',
+              data: Temperature.reverse(),
+              fill: false,
+              backgroundColor: "#648BD0",
+              pointBackgroundColor: '#fff',
+              borderColor: "#648BD0",
+            },
+            {
+              label: 'Humidity (%)',
+              data: Humidity.reverse(),
+              fill: false,
+              pointBackgroundColor: '#fff',
+              backgroundColor: "rgba(100,100,126,0.1)"
+            }
+          ]
+        }
+      });
+    </script>
+  </body>
+</html>
