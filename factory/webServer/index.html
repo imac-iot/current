@@ -32,8 +32,21 @@
     </style>
     <script src="chart.js"></script>
     <script>
+       var selectStatus = "{{selectStatus}}";
+       console.log(selectStatus + ' is now Status');
       //socket.io connect to server
       var socket = io.connect('http://127.0.0.1:5500');
+      socket.on('DO3btn', function (msg) {
+      if (msg.data == "on"){
+        console.log('on');
+          document.getElementById("DO3").disabled = true; 
+        
+      }else{
+      console.log('off');
+          document.getElementById("DO3").disabled = false; 
+
+      }
+      });
       socket.on('tempSetting', function (msg) {
         $('#tempSetting').text(msg.data)
       });
@@ -77,6 +90,22 @@
         });
       }
     </script>
+   <script>
+    //  var selectStatus = "{{selectStatus}}";
+    //  if (selectStatus == "on"){
+    //    console.log(selectStatus + ' is now Status');
+    //    window.onload = function what(){
+    //     //document.getElementById("DO3").innerHTML = '<button type="button" value="ON/OFF" class="btn btn-primary btn-block" disabled=""/> ';
+    //     document.getElementById("DO3").disabled = true; 
+    //   };
+    //  }else{
+    //   console.log(selectStatus + ' is now Status');
+    //    window.onload = function what(){
+    //     //document.getElementById("DO3").innerHTML = '<button type="button" value="ON/OFF" class="btn btn-primary btn-block" disabled=""/> ';
+    //     document.getElementById("DO3").disabled = false; 
+    //  } 
+    // }
+   </script>
   </head>
 
   <body>
@@ -112,7 +141,7 @@
             Auto Temperature setting:
             <input type="text" name="tempSet"/>
             <input type="checkbox" name="checkSelect" checked/> auto control
-            <input type="submit" class="btn"></button>
+            <button type="submit" class="btn">submit</button>
             <p >Auto control select:</p>
             <p style="display:inline"id= "isAuto" class="textcolor">---</p>
             <p >select Temperature:</p>
@@ -133,7 +162,7 @@
         <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
           <h5>OUTPUT 03</h5>
           <h4 id= "ET7044_DO3" class="textcolor">---</h4>
-          <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO3')" />
+          <input type="button" id="DO3" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO3')" disabled='false' />
         </div>
         <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
           <h5>OUTPUT 04</h5>
