@@ -258,7 +258,11 @@ router.post('/isAuto',function * (){
             InsertTime:selectInsertTime,
         })
     }else{
-        console.log('null.......');
+      collection.insert({
+          checkSelect:selectStatus,
+          tempAutoSetting:"0",
+          InsertTime:selectInsertTime,
+      })
     }
     this.redirect('/');
 })
