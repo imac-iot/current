@@ -30,7 +30,7 @@
         color:#787575;
       }
     </style>
-    <script src="chart.js"></script>
+    <!-- <script src="chart.js"></script> -->
     <script>
        var selectStatus = "{{selectStatus}}";
        console.log(selectStatus + ' is now Status');
@@ -39,11 +39,11 @@
       socket.on('DO3btn', function (msg) {
       if (msg.data == "on"){
         console.log('on');
-          document.getElementById("DO3").disabled = true; 
-        
+          document.getElementById("DO3").disabled = true;
+
       }else{
       console.log('off');
-          document.getElementById("DO3").disabled = false; 
+          document.getElementById("DO3").disabled = false;
 
       }
       });
@@ -96,14 +96,14 @@
     //    console.log(selectStatus + ' is now Status');
     //    window.onload = function what(){
     //     //document.getElementById("DO3").innerHTML = '<button type="button" value="ON/OFF" class="btn btn-primary btn-block" disabled=""/> ';
-    //     document.getElementById("DO3").disabled = true; 
+    //     document.getElementById("DO3").disabled = true;
     //   };
     //  }else{
     //   console.log(selectStatus + ' is now Status');
     //    window.onload = function what(){
     //     //document.getElementById("DO3").innerHTML = '<button type="button" value="ON/OFF" class="btn btn-primary btn-block" disabled=""/> ';
-    //     document.getElementById("DO3").disabled = false; 
-    //  } 
+    //     document.getElementById("DO3").disabled = false;
+    //  }
     // }
    </script>
   </head>
