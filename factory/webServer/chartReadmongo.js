@@ -148,7 +148,7 @@ var showPM3133data = function showPM3133data(done) {
             PM3133kW_c[i] = C_JSON[i]['kW_c'];
             PM3133kvar_c[i] = C_JSON[i]['kvar_c'];
             PM3133kVA_c[i] = C_JSON[i]['kVA_c'];
-            
+
         }
         done();
     });
@@ -250,6 +250,7 @@ router.post('/isAuto',function * (){
     var collection = db.collection('selectCheckbox');
     if(selectStatus != "on"){
         selectStatus = "off"
+    }
     if(tempSetting != ""){
         collection.insert({
             checkSelect:selectStatus,
@@ -257,9 +258,12 @@ router.post('/isAuto',function * (){
             InsertTime:selectInsertTime,
         })
     }else{
-        console.log('null.......');
+      collection.insert({
+          checkSelect:selectStatus,
+          tempAutoSetting:"0",
+          InsertTime:selectInsertTime,
+      })
     }
-}
     this.redirect('/');
 })
 app.use(bodyparser());
