@@ -15,17 +15,14 @@
      .margin-adjust {
         margin-top: 5%;
       }
-
      @media (max-width:575px){
        .margin-adjust {
          margin-top: 10%;
         }
       }
-
      .textcolor{
         color:#A54A55;
       }
-
      p{
         color:#787575;
       }
@@ -37,14 +34,14 @@
       //socket.io connect to server
       var socket = io.connect('http://127.0.0.1:5500');
       socket.on('DO3btn', function (msg) {
+      //if checkbox be checked msg = "on"
       if (msg.data == "on"){
         console.log('on');
+      //let D03's btn disable 
           document.getElementById("DO3").disabled = true;
-
       }else{
       console.log('off');
           document.getElementById("DO3").disabled = false;
-
       }
       });
       socket.on('tempSetting', function (msg) {
@@ -136,7 +133,7 @@
     <div class="row margin-adjust">
       <div class="col-md-offset-1 col-md-12 col-sm-12">
         <h1>ET-7044</h1>
-        <P>Digital Output ( 01 - 08 ) controller ; <u>Click button to switch ON/OFF status</u> </h5>
+        <P>Digital Output ( 01 - 08 ) controller ; <u>Click button to switch ON/OFF</u> </h5>
         <form action="/isAuto" method="post">
             Auto Temperature setting:
             <input type="text" name="tempSet"/>

@@ -64,7 +64,8 @@ mqttClient.on('message', function (topic, message) {
             if(checkSelect == 'on'){
                 if(tempSettiong != ""){
                     if( message > tempSettiong ){
-                        temp_DOcontrol[2] = true;            
+                        temp_DOcontrol[2] = true; //fan 's control > on
+                        temp_DOcontrol[1] = true; // humidifier 's control > on     
                         mqttClient.publish('ET7044/write',JSON.stringify(temp_DOcontrol));
                     }else{
                         temp_DOcontrol[2] = false;            

@@ -117,7 +117,6 @@ var PM3133I_c = new Array();
 var PM3133kW_c = new Array();
 var PM3133kvar_c = new Array();
 var PM3133kVA_c = new Array();
-
 var pm3133num = new Array();
 
 var showPM3133data = function showPM3133data(done) {
@@ -240,7 +239,7 @@ router.post('/', function* () {
     this.redirect('/');
 });
 
-//get input checkbox msg and insert to mongo;
+//get input , checkbox msg  and then insert to mongo;
 router.post('/isAuto',function * (){
     isAutoSelect = this.request.body;
     selectStatus = isAutoSelect["checkSelect"];// input name = tempSet
@@ -248,10 +247,10 @@ router.post('/isAuto',function * (){
     var date = new Date();
     selectInsertTime = date.getTime();
     var collection = db.collection('selectCheckbox');
-    if(selectStatus != "on"){
+    if(selectStatus != "on"){ 
         selectStatus = "off"
     }
-    if(tempSetting != ""){
+    if(tempSetting != ""){ 
         collection.insert({
             checkSelect:selectStatus,
             tempAutoSetting:isAutoSelect["tempSet"],
