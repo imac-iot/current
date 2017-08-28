@@ -12,6 +12,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="/socket.io/socket.io.js"></script>
     <style>
+      .inputWidth{
+      width: 100px;
+    }
      .margin-adjust {
         margin-top: 5%;
       }
@@ -19,6 +22,9 @@
        .margin-adjust {
          margin-top: 10%;
         }
+       .inputWidth{
+         width: 50px;
+       }
       }
      .textcolor{
         color:#A54A55;
@@ -26,6 +32,7 @@
      p{
         color:#787575;
       }
+   
     </style>
     <!-- <script src="chart.js"></script> -->
     <script>
@@ -39,17 +46,35 @@
         console.log('on');
       //let D03's btn disable 
           document.getElementById("DO3").disabled = true;
+          
       }else{
       console.log('off');
           document.getElementById("DO3").disabled = false;
       }
       });
+      socket.on('DO2btn', function (msg) {
+      //if checkbox be checked msg = "on"
+      if (msg.data == "on"){
+        console.log('on');
+      //let D03's btn disable 
+          document.getElementById("DO2").disabled = true;
+      }else{
+      console.log('off');
+          document.getElementById("DO2").disabled = false;
+      }
+      });
+      //show Humidity control: 
+      socket.on('humiSetting', function (msg) {
+        $('#humiSetting').text(msg.data)
+      });
+      //show Temperature control:
       socket.on('tempSetting', function (msg) {
         $('#tempSetting').text(msg.data)
       });
       socket.on('isAuto', function (msg) {
         $('#isAuto').text(msg.data)
       });
+      //show output true/false:
       socket.on('ET7044_DO1', function (msg) {
         $('#ET7044_DO1').text(msg.data)
       });
@@ -87,22 +112,7 @@
         });
       }
     </script>
-   <script>
-    //  var selectStatus = "{{selectStatus}}";
-    //  if (selectStatus == "on"){
-    //    console.log(selectStatus + ' is now Status');
-    //    window.onload = function what(){
-    //     //document.getElementById("DO3").innerHTML = '<button type="button" value="ON/OFF" class="btn btn-primary btn-block" disabled=""/> ';
-    //     document.getElementById("DO3").disabled = true;
-    //   };
-    //  }else{
-    //   console.log(selectStatus + ' is now Status');
-    //    window.onload = function what(){
-    //     //document.getElementById("DO3").innerHTML = '<button type="button" value="ON/OFF" class="btn btn-primary btn-block" disabled=""/> ';
-    //     document.getElementById("DO3").disabled = false;
-    //  }
-    // }
-   </script>
+
   </head>
 
   <body>
@@ -121,13 +131,11 @@
         <h1>DL-303</h1>
         <p >CO2、Temperature and Humidity monitor</p>
       </div>
-
       <div class="row margin-top">
         <div class="col-md-offset-1 col-md-10 col-sm-12">
           <canvas id="DL303Chart"></canvas>
         </div>
       </div>
-
     </div>
     <div class="container">
     <div class="row margin-adjust">
@@ -135,71 +143,80 @@
         <h1>ET-7044</h1>
         <P>Digital Output ( 01 - 08 ) controller ; <u>Click button to switch ON/OFF</u> </h5>
         <form action="/isAuto" method="post">
-            Auto Temperature setting:
-            <input type="text" name="tempSet"/>
-            <input type="checkbox" name="checkSelect" checked/> auto control
-            <button type="submit" class="btn">submit</button>
-            <p >Auto control select:</p>
+            Temperature :
+            <input type="text" name="tempSet" class="inputWidth"/>
+            Humidity :
+            <input type="text" name="humiSet" class="inputWidth"/>
+            <input type="checkbox" name="checkSelect" checked/> auto 
+            <button type="submit" class="btn btn-default">submit</button>
+            <p >Auto control</p>
             <p style="display:inline"id= "isAuto" class="textcolor">---</p>
-            <p >select Temperature:</p>
+            <p >Temperature control:</p>
             <p style="display:inline" id= "tempSetting" class="textcolor">---</p>
+            <p >Humidity control:</p>
+            <p style="display:inline" id= "humiSetting" class="textcolor">---</p>
         </form>
       </div>
+      <!-- output -->
       <div class="row col-md-12 col-lg-12 margin-adjust" style="margin-top:10px">
+        <!-- output1   -->
         <div class="col-md-2 col-sm-10 col-xs-10 col-md-offset-1 col-lg-2">
           <h5>OUTPUT 01</h5>
           <h4 id= "ET7044_DO1" class="textcolor" >---</h4>
           <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO1')" />
         </div>
+        <!-- output2   -->
         <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
           <h5>OUTPUT 02</h5>
           <h4 id= "ET7044_DO2" class="textcolor">---</h4>
-          <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO2')" />
+          <input type="button" id="DO2" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO2')" />
         </div>
+        <!-- output3   -->
         <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
           <h5>OUTPUT 03</h5>
           <h4 id= "ET7044_DO3" class="textcolor">---</h4>
           <input type="button" id="DO3" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO3')" disabled='false' />
         </div>
+        <!-- output4   -->
         <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
           <h5>OUTPUT 04</h5>
           <h4 id= "ET7044_DO4" class="textcolor">---</h4>
           <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO4')" />
         </div>
+        <!-- output5   -->
         <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
           <h5>OUTPUT 05</h5>
           <h4 id= "ET7044_DO5" class="textcolor">---</h4>
           <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO5')" />
         </div>
+        <!-- output6   -->
          <div class="col-md-2 col-md-offset-1 col-sm-10 col-xs-10 col-lg-2 col-lg-offset-1">
           <h5>OUTPUT 06</h5>
           <h4 id= "ET7044_DO6" class="textcolor">---</h4>
           <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO6')" />
         </div>
+        <!-- output7   -->
         <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
           <h5>OUTPUT 07</h5>
           <h4 id= "ET7044_DO7" class="textcolor">---</h4>
           <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO7')" />
         </div>
+        <!-- output8   -->
         <div class="col-md-2 col-sm-10 col-xs-10 col-lg-2">
           <h5>OUTPUT 08</h5>
           <h4 id= "ET7044_DO8" class="textcolor">---</h4>
           <input type="button" value="ON/OFF" class="btn btn-primary btn-block" onclick="ajaxBtn('DO8')" />
         </div>
-        </div>
-        <div class="row">
-
-        </div>
+      </div>
       </div>
     </div>
     <div class="container-fluid" style="margin-top:50px;background-color:#F8F8F8">
        <div class="row">
          <div class="col-md-offset-11 col-xs-offset-11 col-sm-offset-11 col-lg-offset-11">
            <footer >
-             <p style="margin-top:15px">imac</p>
+             <p style="margin-top:15px">i.m.a.c iot</p>
            </footer>
          </div>
-
       </div>
     </div>
     <script>

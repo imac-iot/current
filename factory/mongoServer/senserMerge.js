@@ -1,8 +1,8 @@
 
 //connect mqtt
 var mqtt = require('mqtt')
-var mqttClient = mqtt.connect('mqtt://60.249.15.85:1883')
-//var mqttClient = mqtt.connect();
+// var mqttClient = mqtt.connect('mqtt://60.249.15.85:1883')
+var mqttClient = mqtt.connect();
 mqttClient.on('connect', function () {
     console.log('mqtt connect');
     mqttClient.subscribe('DL303/#') 
@@ -29,7 +29,7 @@ var DL303_dewp;
 
 // ET7044 dev's var
 var ET7044_DOstatus;
-var temp_DOcontrol;
+var auto_DOcontrol;
 
 //PM3133
 var PM3133_A_Json;
@@ -38,44 +38,62 @@ var PM3133_C_Json;
 
 //input post var 
 var checkSelect;
-var tempSettiong;
+var tempSetting;
+var humiSetting;
 
 //mqtt client
 mqttClient.on('message', function (topic, message) {
-    console.log(topic);
+    //console.log(topic);
     switch (topic) {
         case 'DL303/CO2':
             DL303_co2 = message.toString();
             //console.log('get DL303/CO2 message: %s', message)
             break;
         case 'DL303/RH':
+            // humi auto control
             DL303_humi = message.toString();
-            //console.log('get DL303/RH message: %s', message)
+            var collection = db.collection('isAutoCtrl');
+            collection.find({}).limit(1).sort( { InsertTime: -1 } ).toArray(function (err, data) {
+                checkSelect = data[0].checkSelect,
+                humiSetting = data[0].humiAutoSetting
+            });
+            if(checkSelect == 'on'){
+                if(tempSetting != ""){
+                    if( message < humiSetting ){
+                        auto_DOcontrol[1] = true; // humi ctrl on
+                        mqttClient.publish('ET7044/write',JSON.stringify(auto_DOcontrol));
+                    }else{
+                        auto_DOcontrol[1] = false;            
+                        mqttClient.publish('ET7044/write',JSON.stringify(auto_DOcontrol));
+                        }
+                }else(
+                    console.log('HumiSetting = null')
+                )
+            }     
+            //console.log('get DL303/TF message: %s', message)
             break;
         case 'DL303/TC':
             DL303_temp = message.toString();
-            var collection = db.collection('selectCheckbox');
+            var collection = db.collection('isAutoCtrl');
             collection.find({}).limit(1).sort( { InsertTime: -1 } ).toArray(function (err, data) {
                 checkSelect = data[0].checkSelect,
-                tempSettiong = data[0].tempAutoSetting,
-                console.log('checkBox status: '+checkSelect);
-                console.log('temp Auto Setting: '+tempSettiong);
+                tempSetting = data[0].tempAutoSetting  
             });
             if(checkSelect == 'on'){
-                if(tempSettiong != ""){
-                    if( message > tempSettiong ){
-                        temp_DOcontrol[2] = true; //fan 's control > on
-                        temp_DOcontrol[1] = true; // humidifier 's control > on     
-                        mqttClient.publish('ET7044/write',JSON.stringify(temp_DOcontrol));
+                if(tempSetting != ""){
+                    if( message > tempSetting ){
+                        auto_DOcontrol[2] = true; //fan control = on
+                        mqttClient.publish('ET7044/write',JSON.stringify(auto_DOcontrol));
                     }else{
-                        temp_DOcontrol[2] = false;            
-                        mqttClient.publish('ET7044/write',JSON.stringify(temp_DOcontrol));
+                        auto_DOcontrol[2] = false;            
+                        mqttClient.publish('ET7044/write',JSON.stringify(auto_DOcontrol));
                         }
                 }else(
                     console.log('tempSetting = null')
+                    
                 )
             }     
-            console.log('get DL303/TF message: %s', message)
+            //console.log('get DL303/TF message: %s', message)
             break;
         case 'DL303/DC':
             DL303_dewp = message.toString();
@@ -83,8 +101,7 @@ mqttClient.on('message', function (topic, message) {
             break;  
         case 'ET7044/DOstatus':
             ET7044_DOstatus = message.toString();
-            temp_DOcontrol = JSON.parse(message);
-            //console.log('get ET7044/DOstatus message: %s', message)
+            auto_DOcontrol = JSON.parse(message);
             break;
         case 'PM3133/A':
             PM3133_A_Json = JSON.parse(message);
@@ -137,8 +154,6 @@ function insertDL303Data() {
 function insertET7044Data() {
     var date = new Date();
     et7044dataInsertTime = date.getTime();
-    //console.log('insert ET7044\'s  data to mongodb...');
-    //console.log(ET7044_DOstatus);
     var collection = db.collection('ET7044');
     collection.insert({
         DOstatus:ET7044_DOstatus,

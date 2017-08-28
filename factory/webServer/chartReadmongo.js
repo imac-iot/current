@@ -19,8 +19,9 @@ MongoClient.connect("mongodb://localhost:27017/Factory", function (err, pDb) {
 var router = new Router();
 const logger = require('koa-logger');
 //mqtt
-var client = mqtt.connect('mqtt://60.249.15.85:1883');
+//var client = mqtt.connect('mqtt://60.249.15.85:1883');
 //var client = mqtt.connect('mqtt://10.28.120.17');
+var client = mqtt.connect();
 client.on('connect', function () {
     console.log('connect to MQTT server');
     client.subscribe('ET7044/DOstatus');
@@ -37,6 +38,7 @@ var D07;
 var D08;
 var selectStatus = "";
 var tempSetting;
+var humiSetting;
 io.on('connection', function (socket) {
     console.log('socket.io connected');
     client.on('message', function (topic, msg) {
@@ -51,6 +53,9 @@ io.on('connection', function (socket) {
         D06 = DO_json[5];
         D07 = DO_json[6];
         D08 = DO_json[7];
+        socket.emit('DO2btn',{
+            data:selectStatus
+        })
         socket.emit('DO3btn',{
             data:selectStatus
         })
@@ -59,6 +64,9 @@ io.on('connection', function (socket) {
         })
         socket.emit('tempSetting',{
             data:tempSetting
+        })
+        socket.emit('humiSetting',{
+            data:humiSetting
         })
         socket.emit('ET7044_DO1', {
             data: D01
@@ -147,7 +155,6 @@ var showPM3133data = function showPM3133data(done) {
             PM3133kW_c[i] = C_JSON[i]['kW_c'];
             PM3133kvar_c[i] = C_JSON[i]['kvar_c'];
             PM3133kVA_c[i] = C_JSON[i]['kVA_c'];
-
         }
         done();
     });
@@ -242,27 +249,31 @@ router.post('/', function* () {
 //get input , checkbox msg  and then insert to mongo;
 router.post('/isAuto',function * (){
     isAutoSelect = this.request.body;
-    selectStatus = isAutoSelect["checkSelect"];// input name = tempSet
-    tempSetting = isAutoSelect["tempSet"];//input name = checkSelect
-    var date = new Date();
+    selectStatus = isAutoSelect["checkSelect"];// inpu name = checkSelect tempSet
+    tempSetting = isAutoSelect["tempSet"];//input name = tempSet
+    humiSetting = isAutoSelect["humiSet"];//input name = humiSet
+    var date = new Date(); 
     selectInsertTime = date.getTime();
-    var collection = db.collection('selectCheckbox');
+    var collection = db.collection('isAutoCtrl');
     if(selectStatus != "on"){ 
         selectStatus = "off"
     }
-    if(tempSetting != ""){ 
+    if(tempSetting != "" && humiSetting != ""){ 
         collection.insert({
             checkSelect:selectStatus,
             tempAutoSetting:isAutoSelect["tempSet"],
+            humiAutoSetting:isAutoSelect["humiSet"],
             InsertTime:selectInsertTime,
         })
     }else{
       collection.insert({
           checkSelect:selectStatus,
           tempAutoSetting:"0",
+          humiAutoSetting:"0",
           InsertTime:selectInsertTime,
       })
     }
+    
     this.redirect('/');
 })
 app.use(bodyparser());
