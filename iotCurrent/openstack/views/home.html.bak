@@ -12,7 +12,7 @@
 
   <style>
     body {
-      background: url(/img/background.png) no-repeat center center fixed;
+      background: url(/img/background.jpg) no-repeat center center fixed;
       background-size: cover;
     }
 
@@ -36,12 +36,9 @@
     a{
       color:rgb(238, 229, 230);
     }
-   h3,h4{
-	display:inline;
-	}
   </style>
   <script>
-    var socket = io.connect('http://10.28.120.17:3000'); // 連線至伺服器
+    var socket = io.connect('http://127.0.0.1:3000'); // 連線至伺服器
 
      socket.on('dustDensity', function (data) {
       $('#dustDensity').text(data.data)
@@ -84,35 +81,35 @@
       </ul>
     </div>
     <div class="row col-md-5 col-md-offset-3 col-sm-6 col-sm-offset-2 col-xs-8 col-xs-offset-1">
-      <div class="row" style="margin-top:100px">
-        <h1>Humidity and Temperature:</h1>
-        <h3>目前溫度:</h3>
-        <h3 id="temp"></h3>
-        <h3>*C</h3>
+      <div class="row">
+        <h3>Humidity and Temperature:</h3>
+        <p>目前溫度:</p>
+        <p id="temp"></p>
+        <p>*C</p>
         <br>
-        <h3>目前濕度:</h3>
-        <h3 id="humi"></h3>
-        <h3> %</h3>
+        <p>目前濕度:</p>
+        <p id="humi"></p>
+        <p> %</p>
       </div>
 
       <div class="row">
         <hr>
-        <h1>Alternating current:</h1>
-          <h3>目前電流:</h3>
-          <h3 id="date"></h3>
-          <h3>A ( 安培 )</h3>
+        <h3>Alternating current:</h2>
+          <p>目前電流:</p>
+          <p id="date"></p>
+          <p>A ( 安培 )</p>
           <br>
-          <h3>目前使用度數:</h3>
-          <h3 id="power"></h3>
-          <h3>度</h3>
+          <p>目前使用度數:</p>
+          <p id="power"></p>
+          <p>度</p>
           <br>
-          <h3>目前每度費率:</h3>
-          <h3 id="cost"></h3>
-          <h3>元</h3>
+          <p>目前每度費率:</p>
+          <p id="cost"></p>
+          <p>元</p>
           <br>
-          <h3>目前應繳金額:</h3>
-          <h3 id="money"></h3>
-          <h3>元</h3>
+          <p>目前應繳金額:</p>
+          <p id="money"></p>
+          <p>元</p>
           <br>
           <br>
           <input type="text" id="price" placeholder="update price value"></input>
