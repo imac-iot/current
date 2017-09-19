@@ -13,14 +13,14 @@ var config = require('./config.js');
 var render = require('./lib/render.js');
 var db;
 
-MongoClient.connect("mongodb://10.28.120.17:27017/sensors",function(err,pDb){
+MongoClient.connect("mongodb://127.0.0.1:27017/sensors",function(err,pDb){
   if(err){
     return console.dir(err);
   }
   db = pDb;
 });
 
-var mqttClient  = mqtt.connect('mqtt://10.28.120.17');
+var mqttClient  = mqtt.connect('mqtt://10.28.120.33');
 mqttClient.on('connect', function () {
   console.log('on connect');
   mqttClient.subscribe('current');
@@ -40,14 +40,14 @@ var currents = 0;
 // arduino data insert
 function plusdata(){
   var collection = db.collection('datas');
-     if(humi && temp && currents){
-     	collection.insert({
-      		Humidity:humi,
-      		Temperature:temp,
-      		Currents:currents,
-      		inserttime:date.getTime(),
-    	});
-      }
+  if(humi && temp && currents){
+     collection.insert({
+      Humidity:humi,
+      Temperature:temp,
+      Currents:currents,
+      inserttime:date.getTime(),
+    });
+  }
     console.log('insert ok');
 };
 //mongo data find
